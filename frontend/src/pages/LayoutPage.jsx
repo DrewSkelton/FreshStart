@@ -1,11 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FarmArea from "../components/FarmArea";
+import CropForm from "../components/CropForm";
 import '../styles/LayoutPage.css';
 
 const LayoutPage = () => {
-  const [farmDimensions, setFarmDimensions] = useState({ width: 1200, height: 800 });
+  // Calculate initial dimensions based on viewport
+  const calculateInitialDimensions = () => {
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const baseWidth = Math.min(1200, vw * 0.6); // 60% of viewport width, max 1200px
+    const baseHeight = baseWidth * 0.6667; // Maintain 3:2 aspect ratio
+    return {
+      width: Math.round(baseWidth),
+      height: Math.round(baseHeight)
+    };
+  };
+
+  const [farmDimensions, setFarmDimensions] = useState(calculateInitialDimensions);
   const [cropAreas, setCropAreas] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
+
+  // Update dimensions on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setFarmDimensions(calculateInitialDimensions());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="layout-wrapper">
@@ -20,7 +42,23 @@ const LayoutPage = () => {
             {selectedCrop ? (
               <div className="crop-edit-form">
                 <h2>Edit Crop Area</h2>
-                {/* Crop form will be moved here */}
+                <CropForm
+                  crop={selectedCrop}
+                  setSelectedCrop={setSelectedCrop}
+                  onCropUpdate={(updatedCrop) => {
+                    setCropAreas(currentCropAreas =>
+                      currentCropAreas.map(crop =>
+                        crop.id === updatedCrop.id ? updatedCrop : crop
+                      )
+                    );
+                  }}
+                  onDelete={() => {
+                    setCropAreas(currentCropAreas =>
+                      currentCropAreas.filter(crop => crop.id !== selectedCrop.id)
+                    );
+                    setSelectedCrop(null);
+                  }}
+                />
               </div>
             ) : (
               <div className="crop-edit-placeholder">
@@ -96,7 +134,18 @@ const LayoutPage = () => {
             <h2>Crop Areas Overview</h2>
             <div className="crop-list">
               {cropAreas.map((crop) => (
-                <div key={crop.id} className="crop-data-item">
+                <div 
+                  key={crop.id} 
+                  className={`crop-data-item ${selectedCrop && selectedCrop.id === crop.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedCrop(crop)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedCrop(crop);
+                    }
+                  }}
+                >
                   <h3>{crop.cropType !== "Unknown" ? crop.cropType : "Undefined Area"}</h3>
                   <div className="crop-details">
                     <p><strong>Irrigation:</strong> {crop.irrigation}</p>

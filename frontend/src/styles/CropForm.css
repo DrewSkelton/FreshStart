@@ -28,11 +28,17 @@
   cursor: grabbing;
 }
 
+.crop-form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .crop-form-field {
   margin-bottom: 0.75rem;
 }
 
-.crop-form label {
+.crop-form-field label {
   display: block;
   margin-bottom: 0.25rem;
   color: #e4e4e7;
@@ -40,7 +46,7 @@
   font-size: 0.9rem;
 }
 
-.crop-form select {
+.crop-form-field select {
   width: 100%;
   padding: 0.4rem;
   padding-right: 2rem;
@@ -57,32 +63,52 @@
   background-size: 1rem;
 }
 
-.crop-form select:hover {
+.crop-form-field select:hover {
   border-color: #43873b80;
 }
 
-.crop-form select:focus {
+.crop-form-field select:focus {
   outline: none;
   border-color: #43873b;
   box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
 }
 
-.crop-form button {
-  width: 100%;
-  padding: 0.5rem;
+.crop-form-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
   margin-top: 0.5rem;
+}
+
+.crop-form-button {
+  flex: 1;
+  padding: 0.5rem;
   background-color: #43873b;
   color: white;
   border: none;
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.crop-form button:hover {
+.crop-form-button:hover {
+  background-color: #4f9c46;
+}
+
+.crop-form-button:active {
   background-color: #356c2f;
 }
 
-.crop-form button:active {
-  background-color: #2a5525;
+.crop-form-button.delete {
+  background-color: #dc2626;
+  color: white;
+}
+
+.crop-form-button.delete:hover {
+  background-color: #ef4444;
+}
+
+.crop-form-button.delete:active {
+  background-color: #b91c1c;
 } 
