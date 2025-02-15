@@ -1,8 +1,8 @@
 :root {
-  --sx-color-primary: #4b2a00; /* Main color */
-  --sx-color-on-primary: #fff;
-  --sx-color-primary-container: #eaddff;
-  --sx-color-on-primary-container: #4b2a00;
+  --sx-color-primary: #1c1b1f; /* Main color */
+  --sx-color-on-primary: #1c1b1f;
+  --sx-color-primary-container: #1c1b1f;
+  --sx-color-on-primary-container: #1c1b1f;
   --sx-color-secondary: #43873b; /* Accent color */
   --sx-color-on-secondary: #fff;
   --sx-color-secondary-container: #e8def8;
@@ -23,7 +23,7 @@
   --sx-color-outline: #79747e;
   --sx-color-outline-variant: #c4c7c5;
   --sx-color-shadow: #000;
-  --sx-color-surface-tint: #4b2a00; /* Main color */
+  --sx-color-surface-tint: #1c1b1f; /* Main color */
   --sx-color-neutral: var(--sx-color-outline);
   --sx-color-neutral-variant: var(--sx-color-outline-variant);
 
@@ -88,6 +88,37 @@ a, button {
   align-items: center;
   padding: 10px;
   width: 100%;
+}
+
+.sx__calendar-header {
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.sx__view-container {
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+}
+.sx__week-header-content {
+  background-color: var(--sx-color-secondary);
+  color: var(--sx-color-secondary);
+  color: white
+}
+
+.sx__week-grid__day-name {
+  color: white;
+}
+.sx__week-grid__date-number {
+  color: white;
+}
+.sx__date-picker-wrapper, .months-view, .sx__today-button{
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
 }
 
 .calendar {
