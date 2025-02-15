@@ -1,0 +1,88 @@
+.crop-form {
+  position: absolute;
+  background-color: #353238;
+  padding: 1rem;
+  border: 1px solid #43873b40;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-width: 250px;
+  width: calc(100% - 2rem);
+  color: #e4e4e7;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.crop-form.dragging {
+  transition: none;
+}
+
+.crop-form h3 {
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  cursor: grab;
+}
+
+.crop-form h3:active {
+  cursor: grabbing;
+}
+
+.crop-form-field {
+  margin-bottom: 0.75rem;
+}
+
+.crop-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #e4e4e7;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.crop-form select {
+  width: 100%;
+  padding: 0.4rem;
+  padding-right: 2rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #43873b40;
+  border-radius: 4px;
+  background-color: #2a272e;
+  color: #ffffff;
+  font-size: 0.9rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2343873b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+}
+
+.crop-form select:hover {
+  border-color: #43873b80;
+}
+
+.crop-form select:focus {
+  outline: none;
+  border-color: #43873b;
+  box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
+}
+
+.crop-form button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  background-color: #43873b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.crop-form button:hover {
+  background-color: #356c2f;
+}
+
+.crop-form button:active {
+  background-color: #2a5525;
+} 
