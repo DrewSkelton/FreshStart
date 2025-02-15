@@ -14,7 +14,7 @@ import LayoutModel from "../models/Layout.js";
 /* Creates a layout object when user clicks save button 
 
 Example data recived with request:
-Connected to MongoDB
+layout-name: Farm1
 layout-dimensions: {
   "width": 640,
   "height": 426
@@ -22,11 +22,20 @@ layout-dimensions: {
 crop-areas: [
   {
     "cropType": "Corn",
-    "irrigation": "drip",
+    "width": 520,
+    "height": 130,
+    "x": 52.8515625,
+    "y": 216.5390625
+  },
+  {
+    "cropType": "Tomatoes",
+    "irrigation": "sprinkler",
     "fertilizerType": "nitrogen",
     "fertilizerMethod": "broadcasting",
-    "width": 324,
-    "height": 189
+    "width": 235,
+    "height": 66,
+    "x": 191.8515625,
+    "y": 45.5390625
   }
 ]
 Toal farm area is in meters, while crop area area is in square meters. 
@@ -34,11 +43,12 @@ Toal farm area is in meters, while crop area area is in square meters.
 layoutRouter.post("/create-layout", async (req, res) => {
     try {
 
-        const { dimensions, crops } = req.body;
+        const { name, dimensions, crops } = req.body;
+        console.log("layout-name: " + name);
         console.log("layout-dimensions: " + JSON.stringify(dimensions, null, 2));
         console.log("crop-areas: " + JSON.stringify(crops, null, 2));
 
-        const new_layout = new Lay
+        const new_layout = new LayoutModel({});
 
         res.status(201).json({ message: "Layout saved successfully" }); //  layout: newLayout 
     } catch (error) {
