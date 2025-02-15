@@ -5,6 +5,7 @@ import '../styles/LayoutPage.css';
 const LayoutPage = () => {
   const [farmDimensions, setFarmDimensions] = useState({ width: 1200, height: 800 });
   const [cropAreas, setCropAreas] = useState([]);
+  const [selectedCrop, setSelectedCrop] = useState(null);
 
   return (
     <div className="layout-wrapper">
@@ -15,6 +16,20 @@ const LayoutPage = () => {
         </div>
         
         <div className="layout-content">
+          <div className="crop-edit-sidebar">
+            {selectedCrop ? (
+              <div className="crop-edit-form">
+                <h2>Edit Crop Area</h2>
+                {/* Crop form will be moved here */}
+              </div>
+            ) : (
+              <div className="crop-edit-placeholder">
+                <h2>Crop Editor</h2>
+                <p>Select a crop area to edit its details</p>
+              </div>
+            )}
+          </div>
+
           <div className="layout-main">
             <div className="farm-controls">
               <div className="dimension-controls">
@@ -55,8 +70,25 @@ const LayoutPage = () => {
               <FarmArea 
                 farmDimensions={farmDimensions} 
                 cropAreas={cropAreas} 
-                setCropAreas={setCropAreas} 
+                setCropAreas={setCropAreas}
+                selectedCrop={selectedCrop}
+                setSelectedCrop={setSelectedCrop}
               />
+            </div>
+
+            <div className="save-container">
+              <button 
+                className="save-button"
+                onClick={() => {
+                  // TODO: Implement save functionality
+                  console.log('Saving farm layout:', {
+                    dimensions: farmDimensions,
+                    crops: cropAreas
+                  });
+                }}
+              >
+                Save Farm Layout
+              </button>
             </div>
           </div>
 
