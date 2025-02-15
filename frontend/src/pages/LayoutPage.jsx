@@ -117,7 +117,7 @@ const LayoutPage = () => {
             <div className="save-container">
               <button 
                 className="save-button"
-                onClick={saveLayout}
+                // onClick={saveLayout}
               >
                 Save Farm Layout
               </button>
