@@ -5,7 +5,8 @@ import axios from "axios";
 import '../styles/LayoutPage.css';
 
 const LayoutPage = () => {
-  // Calculate initial dimensions based on viewport
+  const [name, setName] = useState();
+  // calculate initial dimensions based on viewport
   const calculateInitialDimensions = () => {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const baseWidth = Math.min(1200, vw * 0.6); // 60% of viewport width, max 1200px
@@ -36,6 +37,7 @@ const LayoutPage = () => {
   const saveLayout = async () => {
     // Prepare the data object to send to the backend
     const layoutData = {
+      name: name,
       dimensions: farmDimensions,
       crops: cropAreas.map((crop) => ({
         cropType: crop.cropType,
@@ -148,6 +150,12 @@ const LayoutPage = () => {
             </div>
 
             <div className="save-container">
+            <input 
+                type="text" 
+                placeholder="enter the name of your layout..." 
+                onChange={(e) => setName(e.target.value)} 
+                value={name} // Bind value to state variable 'name'
+            />
               <button 
                 className="save-button"
                 onClick={saveLayout}
