@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const CropAreaSchema = new mongoose.Schema({
     cropType: { type: String, required: true },
@@ -12,4 +12,6 @@ const CropAreaSchema = new mongoose.Schema({
     fertilizerMethod: { type: String, required: true }
 });
 
-export default CropAreaSchema; 
+
+const CropAreaModel = mongoose.model("CropArea", CropAreaSchema);
+export default CropAreaModel; 

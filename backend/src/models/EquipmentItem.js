@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 
 const EquipmentItemSchema = new mongoose.Schema({
@@ -6,6 +6,6 @@ const EquipmentItemSchema = new mongoose.Schema({
     cost: { type: Number, required: true } // Cost of the equipment
 });
 
-const EquipmentItem = mongoose.model("EquipmentItem", EquipmentItemSchema);
+const EquipmentItemModel = mongoose.model("EquipmentItem", EquipmentItemSchema);
 
-export default EquipmentItemSchema; 
+export default EquipmentItemModel; 

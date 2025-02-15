@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FarmArea from "../components/FarmArea";
 import CropForm from "../components/CropForm";
+import axios from "axios";
 import '../styles/LayoutPage.css';
 
 const LayoutPage = () => {
@@ -19,7 +20,7 @@ const LayoutPage = () => {
   const [cropAreas, setCropAreas] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
 
-  // Update dimensions on window resize
+  // update dimensions on window resize, using use effect
   useEffect(() => {
     const handleResize = () => {
       setFarmDimensions(calculateInitialDimensions());
@@ -28,6 +29,38 @@ const LayoutPage = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+
+
+
+  const saveLayout = async () => {
+    // Prepare the data object to send to the backend
+    const layoutData = {
+      dimensions: farmDimensions,
+      crops: cropAreas.map((crop) => ({
+        cropType: crop.cropType,
+        irrigation: crop.irrigation,
+        fertilizerType: crop.fertilizerType,
+        fertilizerMethod: crop.fertilizerMethod,
+        width: crop.width,
+        height: crop.height,
+        x: crop.x, // (x,y) coors
+        y: crop.y
+      })),
+    };
+
+    try {
+      // send post request to backend API to 
+      const result = await axios.post("http://localhost:3001/layout/create-layout", layoutData);
+      console.log("result: " + result.data.message);
+
+    } catch (error) {
+      console.error("Error saving layout:", error.response.data);
+    }
+  };
+
+
+
 
   return (
     <div className="layout-wrapper">
@@ -117,7 +150,7 @@ const LayoutPage = () => {
             <div className="save-container">
               <button 
                 className="save-button"
-                // onClick={saveLayout}
+                onClick={saveLayout}
               >
                 Save Farm Layout
               </button>
