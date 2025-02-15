@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import CropArea from "./CropArea";
 import CropForm from "./CropForm";
 
-const FarmArea = ({ farmDimensions, cropAreas, setCropAreas }) => {
-    const [selectedCrop, setSelectedCrop] = useState(null);
+const FarmArea = ({ farmDimensions, cropAreas, setCropAreas, selectedCrop, setSelectedCrop }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [startPos, setStartPos] = useState(null);
     const [currentPos, setCurrentPos] = useState(null);
