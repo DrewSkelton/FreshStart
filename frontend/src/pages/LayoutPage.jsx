@@ -7,6 +7,27 @@ const LayoutPage = () => {
   const [cropAreas, setCropAreas] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
 
+  const saveLayout = async () => {
+    try {
+        // Prepare the data payload to send to backend
+        const layoutData = {
+            name: "Test",
+            crop_areas: cropAreas,
+            equipments: equipments,  // Send equipments if needed
+            total_cost: totalCost,
+            layout_dimensions: { width: layoutWidth, height: layoutHeight } // Include layout dimensions
+        };
+
+        // Sending data to the backend
+        const response = await axios.post("http://localhost:3001/layouts/create-layout", layoutData);
+        console.log(response.data);  // Log the response from backend
+        alert("Layout saved successfully!");
+    } catch (error) {
+        console.error("Error saving layout:", error);
+        alert("Failed to save layout.");
+    }
+  };
+
   return (
     <div className="layout-wrapper">
       <div className="layout-page">
@@ -79,13 +100,7 @@ const LayoutPage = () => {
             <div className="save-container">
               <button 
                 className="save-button"
-                onClick={() => {
-                  // TODO: Implement save functionality
-                  console.log('Saving farm layout:', {
-                    dimensions: farmDimensions,
-                    crops: cropAreas
-                  });
-                }}
+                onClick={saveLayout}
               >
                 Save Farm Layout
               </button>

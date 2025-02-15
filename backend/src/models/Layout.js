@@ -5,6 +5,8 @@ const LayoutSchema = new mongoose.Schema({
     crop_areas: { type: [CropAreaSchema], default: [] },
     equipments: { type: [EquipmentItemSchema], default: [] },
     total_cost: { type: Number, default: 0.0 },
+    width: { type: Number, required: true },  // width/height
+    height: { type: Number, required: true }, 
     
 });
 
