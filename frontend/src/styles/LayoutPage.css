@@ -1,0 +1,142 @@
+.layout-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #2a272e;
+  color: #e4e4e7;
+}
+
+/* Add a wrapper to ensure background covers everything */
+.layout-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2a272e;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.layout-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.layout-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.layout-header p {
+  font-size: 1.1rem;
+  color: #43873b;
+}
+
+.farm-controls {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #353238;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #43873b20;
+}
+
+.dimension-controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 500;
+  color: #e4e4e7;
+}
+
+.input-group input {
+  padding: 0.5rem;
+  border: 1px solid #43873b40;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 200px;
+  transition: all 0.2s ease;
+  background-color: #2a272e;
+  color: #ffffff;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #43873b;
+  box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
+}
+
+.input-group input:hover {
+  border-color: #43873b80;
+}
+
+.instructions {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #2a272e;
+  border-radius: 6px;
+  border: 1px solid #43873b40;
+}
+
+.instructions h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.instructions ol {
+  padding-left: 1.5rem;
+  color: #e4e4e7;
+}
+
+.instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.instructions li::marker {
+  color: #43873b;
+}
+
+.farm-area-container {
+  background-color: #353238;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #43873b20;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .farm-controls {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    width: 100%;
+  }
+  
+  .layout-page {
+    padding: 1rem;
+  }
+} 

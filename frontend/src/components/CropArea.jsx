@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import CropForm from "./CropForm";
+import React from "react";
 
-const CropArea = ({ crop, setSelectedCrop }) => {
+const CropArea = ({ crop, setSelectedCrop, isSelected }) => {
     return (
         <button
             className="crop-area"
@@ -12,15 +11,26 @@ const CropArea = ({ crop, setSelectedCrop }) => {
                 width: crop.width,
                 height: crop.height,
                 backgroundColor: crop.color,
-                border: "1px solid black",
-                cursor: "pointer"
+                border: isSelected ? "3px solid #43873b" : "1px solid #43873b40",
+                boxShadow: isSelected ? "0 0 0 3px rgba(67, 135, 59, 0.4)" : "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#ffffff",
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                textShadow: "0 1px 2px rgba(0, 0, 0, 0.3)",
+                transition: "all 0.2s ease",
+                outline: "none",
+                padding: 0
             }}
             onClick={(e) => {
                 e.stopPropagation(); // Prevent farm area clicks
                 setSelectedCrop(crop);
             }}
         >
-            {crop.cropType}
+            {crop.cropType !== "Unknown" ? crop.cropType : "Click to edit"}
         </button>
     );
 };
