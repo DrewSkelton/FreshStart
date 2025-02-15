@@ -9,4 +9,5 @@ const LayoutSchema = new mongoose.Schema({
 });
 
 const Layout = mongoose.model("Layout", LayoutSchema);
-module.exports = Layout;
+
+export default LayoutSchema; 

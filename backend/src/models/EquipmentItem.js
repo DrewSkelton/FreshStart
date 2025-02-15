@@ -7,4 +7,5 @@ const EquipmentItemSchema = new mongoose.Schema({
 });
 
 const EquipmentItem = mongoose.model("EquipmentItem", EquipmentItemSchema);
-module.exports = EquipmentItem;
+
+export default EquipmentItemSchema; 

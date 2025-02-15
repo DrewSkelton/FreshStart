@@ -12,4 +12,4 @@ const CropAreaSchema = new mongoose.Schema({
     fertilizerMethod: { type: String, required: true }
 });
 
-module.exports = CropAreaSchema;
+export default CropAreaSchema; 

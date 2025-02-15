@@ -2,11 +2,18 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 
-const app = express();
 
+// import routers
+import layoutRouter from "./routes/layout_routes.js";
+
+// create express-app
+const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+// include imported routes
+app.use("/layout", layoutRouter);
 
 
 
