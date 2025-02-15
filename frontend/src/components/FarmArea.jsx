@@ -20,7 +20,7 @@ const FarmArea = ({ farmDimensions }) => {
 
         const endPos = { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY };
 
-        // Calculate dimensions
+        // compute dimensions
         const width = Math.abs(endPos.x - startPos.x);
         const height = Math.abs(endPos.y - startPos.y);
 
