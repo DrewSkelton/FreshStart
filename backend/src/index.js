@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 // import routers
 import layoutRouter from "./routes/layout_routes.js";
+import userRouter from "./routes/user_routes.js";
 
 // create express-app
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors());
 
 // include imported routes
 app.use("/layout", layoutRouter);
+app.use("/", userRouter);
 
 
 // TBD: create route that imports ml funcs loads data, train model, gets predictions
