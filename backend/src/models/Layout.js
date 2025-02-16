@@ -15,6 +15,8 @@ const LayoutSchema = new mongoose.Schema({
     soil_ph: { type: Number, required: false },
     soil_npk: { type: Number, required: false },
     soil_om: { type: Number, required: false },
+
+    total_yield: { type: Number, default: 0.0, required: false },
    
 });
 

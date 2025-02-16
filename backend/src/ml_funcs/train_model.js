@@ -41,6 +41,7 @@ async function prepareData() {
     const fertilizerTypes = [...new Set(parsedData.data.map(row => row['fertilizer_type']))];
     const fertilizerMethods = [...new Set(parsedData.data.map(row => row['fertilizer_method']))];
 
+
     // Convert data with label encoding
     const data = parsedData.data.map(row => ({
         cropType: labelEncode(row['crop_type'], cropTypes),
@@ -152,6 +153,7 @@ async function loadModel() {
 async function predict(model, inputData) {
     try {
         // Create the input tensor
+        console.log("*****predict input-data: ", inputData);
         const inputTensor = tf.tensor2d([inputData]);
         
         // Make prediction
@@ -168,11 +170,14 @@ async function predict(model, inputData) {
         // predictedValue = inverseLogTransformData([predictedValue])[0];
         predictedValue = Math.max(0, predictedValue);
         
-        if (predictedValue <= 50) {
-            predictedValue /= 19;
+        if (predictedValue <= 1) {
+            predictedValue += 1;
         }
-        if (predictedValue >= 50) {
+        else if (predictedValue >= 50) {
             predictedValue /= 38;
+        }
+        else if (predictedValue <= 50) {
+            predictedValue += 19;
         }
 
         console.log("Predicted crop yield (kg per m^2):", predictedValue);
@@ -209,11 +214,78 @@ async function main() {
 // // Run the main function
 // main().catch(err => console.error(err));
 
+
+
+
+async function prepareDataSingleExample(exampleInput) { // 2d-arr
+    console.log("***PrepareData***:")
+    const csvData = fs.readFileSync(csvFilePath, 'utf-8');
+    const parsedData = Papa.parse(csvData, { header: true, skipEmptyLines: true });
+    console.log("exampleInput: ", exampleInput);
+
+    // Extract unique categories from parsedData
+    const cropTypes = [...new Set(parsedData.data.map(row => row['crop_type']))];
+    const irrigationMethods = [...new Set(parsedData.data.map(row => row['irrigation_method']))];
+    const fertilizerTypes = [...new Set(parsedData.data.map(row => row['fertilizer_type']))];
+    const fertilizerMethods = [...new Set(parsedData.data.map(row => row['fertilizer_method']))];
+    console.log("cropTypes:", cropTypes);
+    console.log("irrigationMethods:", irrigationMethods);
+    console.log("fertilizerTypes:", fertilizerTypes);
+    console.log("fertilizerMethods:", fertilizerMethods);
+
+    console.log("Encoding cropType:", exampleInput[0][0], "->", labelEncode(exampleInput[0][0], cropTypes));
+    console.log("Encoding irrigationMethod:", exampleInput[0][5], "->", labelEncode(exampleInput[0][5], irrigationMethods));
+    console.log("Encoding fertilizerType:", exampleInput[0][6], "->", labelEncode(exampleInput[0][6], fertilizerTypes));
+    console.log("Encoding fertilizerMethod:", exampleInput[0][7], "->", labelEncode(exampleInput[0][7], fertilizerMethods));
+
+
+    // Convert the exampleInput to the correct shape for model input
+    const exampleData = {
+        cropType: labelEncode(exampleInput[0][0], cropTypes),
+        cropArea: parseFloat(exampleInput[0][1]),
+        soilPH: parseFloat(exampleInput[0][2]),
+        soilNPK: parseFloat(exampleInput[0][3]),
+        soilOrganicMatter: parseFloat(exampleInput[0][4]),
+        irrigationMethod: labelEncode(exampleInput[0][5], irrigationMethods),
+        fertilizerType: labelEncode(exampleInput[0][6], fertilizerTypes),
+        fertilizerMethod: labelEncode(exampleInput[0][7], fertilizerMethods),
+        density: parseFloat(exampleInput[0][8])
+    };
+    console.log("exampleData post encode: ", exampleData);
+
+    // Create a 2D array for X (features)
+    let X = [
+        [
+            exampleData.cropType,
+            exampleData.cropArea,
+            exampleData.soilPH,
+            exampleData.soilNPK,
+            exampleData.soilOrganicMatter,
+            exampleData.irrigationMethod,
+            exampleData.fertilizerType,
+            exampleData.fertilizerMethod,
+            exampleData.density
+        ]
+    ];
+
+    // let X = exampleData;
+    // Normalize the data (using the normalization function from parsedData)
+    X = normalizeData(X);  // Ensure that normalizeData can handle 2D arrays
+
+    // Convert X to tensor (the model expects tensor data)
+    const X_tensor = tf.tensor2d(X);  // This is now a 2D array with shape [1, 9] for 1 example
+
+    return { X_tensor };
+}
+
+
 export default {
     prepareData,
     createModel,
     trainModel,
     loadModel,
     predict,
-    main
+    main,
+    prepareDataSingleExample
+
 };

@@ -14,7 +14,7 @@ import CropAreaModel from "../models/CropArea.js";
 // import ml funcs
 import modelFunctions from '../ml_funcs/train_model.js';
 
-const { prepareData, createModel, trainModel, loadModel, predict, main } = modelFunctions;
+const { prepareData, createModel, trainModel, loadModel, predict, main, prepareDataSingleExample } = modelFunctions;
 
 
 /* Creates a layout object when user clicks save button 
@@ -62,7 +62,7 @@ layoutRouter.post("/create-layout", async (req, res) => {
         console.log("layout-name: " + name);
         console.log("layout-dimensions: " + JSON.stringify(dimensions, null, 2));
         console.log("crop-areas: " + JSON.stringify(crops, null, 2));
-        console.log("create-layout-request-data: " + JSON.stringify(req.body, null, 2))
+        console.log("create-layout-request-data: " + JSON.stringify(req.body, null, 2));
 
         let total_area = 0;
         const cropAreaIds = [];
@@ -166,24 +166,83 @@ layoutRouter.post("/train-save-model/", async (req, res) => {
 /* generates predictionby laoding in saved model, given a row of input data
 run via postman: http://localhost:3001/layout/get-prediction
 Data:
-
-*/
-layoutRouter.get("/get-prediction/", async (req, res) => {
-    try {
-        
-        const { X_tensor, Y_tensor } = await prepareData(); // clean data
-        // train & save model
-        // await trainModel(X_tensor, Y_tensor);  
-
-        // test model 
-        const exampleInput = [1, 100, 6.5, 40, 3.5, 0, 0, 0, 200]; // Example input
-        const model = await loadModel();
-        const predicted_crop_yield = await predict(model, exampleInput);
-        console.log("Predicted crop yield (kg per m^2) route:", predicted_crop_yield);
-
-        res.status(200).json({message:"success train save model"});
-    } catch (error) {
-        res.status(500).json({ message: "error model predictions", error: error.message });
+get-prediction-request-data: {
+  "dimensions": {
+    "width": 794,
+    "height": 529
+  },
+  "soil_ph": 1,
+  "soil_npk": 1,
+  "soil_om": 1,
+  "crops": [
+    {
+      "cropType": "Corn",
+      "irrigation": "drip",
+      "fertilizerType": "nitrogen",
+      "fertilizerMethod": "broadcasting",
+      "width": 247,
+      "height": 154,
+      "x": 228.2708282470703,
+      "y": 159.02083587646484,
+      "density": 0
     }
+  ]
+}
+*/
+layoutRouter.post("/get-prediction/", async (req, res) => {
+    
+        const  crops  = req.body.crops;
+        console.log("get-prediction-request-data: " + JSON.stringify(req.body, null, 2))
+        
+    
+        // // Load the model (train and save if necessary)
+        const model = await loadModel();
+    
+        const predictedYields = [];
+        console.log("crops  loop", crops);
+        for (let crop of crops) {
+            // Encode the single crop example
+            let exampleInput = [
+                crop.cropType, 
+                crop.width * crop.height,  // Calculate crop area (width * height)
+                req.body.soil_ph, 
+                req.body.soil_npk,  
+                req.body.soil_om,  
+                crop.irrigation, 
+                crop.fertilizerType, 
+                crop.fertilizerMethod,
+                crop.density  
+              ];
+            console.log("exampleInput before**::", exampleInput);
+            exampleInput = exampleInput.map(item => {
+                // Check if the item is a string and capitalize the first letter
+                if (typeof item === 'string') {
+                    return item.charAt(0).toUpperCase() + item.slice(1);
+                }
+                return item; // Return the item as is if it's not a string
+            });
+            console.log("exampleInput:", exampleInput);
+
+
+            let encodedExampleInput = await prepareDataSingleExample([exampleInput]);
+            encodedExampleInput = encodedExampleInput.X_tensor.arraySync()[0];
+            console.log("encodedExampleInput:",encodedExampleInput);
+
+            // use model to predict
+            const predictedYield = await predict(model, encodedExampleInput);
+            predictedYields.push({ cropId: crop.id, value: predictedYield });
+            console.log("predictedYield: ", predictedYield);
+        }
+
+        // Send the predictions back to the frontend in response
+        console.log("before sent response");
+        res.status(200).json({ predictedYields });
+        console.log(" after sent response");
+
+    // console.error("Error predicting crop yield:", error.message);
+    // res.status(500).json({ message: "Error with prediction", error: error.message });
+    
 });
+
+
 export default layoutRouter; 
