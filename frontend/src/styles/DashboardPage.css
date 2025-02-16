@@ -1,59 +1,149 @@
 .layout-page {
+    max-width: min(1600px, 95vw);
+    margin: 0 auto;
+    padding: min(2rem, 4vw);
+    min-height: 100vh;
     display: flex;
-    height: 100vh;
+    gap: min(2rem, 4vw);
+    background-color: #2a272e;
+    color: #e4e4e7;
+    position: relative;
 }
 
-/* Sidebar Layout List */
+/* Layout List Sidebar */
 .layout-list {
-    width: 25%;
-    background: #f8f8f8;
-    padding: 20px;
-    border-right: 1px solid #ccc;
+    width: 300px;
+    flex-shrink: 0;
+    background-color: #353238;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #43873b40;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    height: fit-content;
+    max-height: calc(100vh - 4rem);
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* Layout Card Style */
 .layout-card {
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    background-color: #2a272e;
+    border: 1px solid #43873b40;
+    border-radius: 6px;
+    padding: 1rem;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
 }
 
 .layout-card:hover {
-    background: #ddd;
+    transform: translateY(-1px);
+    border-color: #43873b80;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .layout-card.selected {
-    background: #3498db;
-    color: white;
+    border-color: #43873b;
+    background-color: #2f2b33;
+    box-shadow: 0 0 0 2px #43873b40;
 }
 
-/* Main Layout View */
+.layout-card h3 {
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.layout-card p {
+    color: #e4e4e7;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Layout View Panel */
 .layout-view {
-    flex-grow: 1;
-    padding: 20px;
-    position: relative;
-    overflow: auto;
+    flex: 1;
+    background-color: #353238;
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #43873b40;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    min-height: calc(100vh - 4rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-/* Layout Canvas */
+.layout-view p {
+    color: #e4e4e7;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
 .layout-canvas {
     position: relative;
-    background: #eee;
-    border: 2px solid #333;
-    margin-top: 20px;
+    background-color: #2a272e;
+    border: 1px solid #43873b40;
+    border-radius: 4px;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
 }
 
-/* Crop Area */
 .crop-area {
-    background-color: rgba(0, 128, 0, 0.3);
-    text-align: center;
-    padding: 5px;
-    border-radius: 5px;
-    border: 1px solid green;
-    font-size: 0.8em;
+    background-color: rgba(67, 135, 59, 0.1);
+    border: 1px solid #43873b !important;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
+
+.crop-area:hover {
+    background-color: rgba(67, 135, 59, 0.2);
+}
+
+.crop-area p {
+    margin: 0.25rem 0;
+    font-size: 0.8rem;
+    color: #e4e4e7;
+    text-align: left;
+}
+
+/* Scrollbar Styling */
+.layout-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.layout-list::-webkit-scrollbar-track {
+    background: #2a272e;
+    border-radius: 4px;
+}
+
+.layout-list::-webkit-scrollbar-thumb {
+    background-color: #43873b;
+    border-radius: 4px;
+    border: 2px solid #2a272e;
+}
+
+.layout-list::-webkit-scrollbar-thumb:hover {
+    background-color: #4f9c46;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .layout-page {
+        flex-direction: column;
+    }
+
+    .layout-list {
+        width: 100%;
+        max-height: none;
+    }
+
+    .layout-view {
+        min-height: 50vh;
+    }
 }
