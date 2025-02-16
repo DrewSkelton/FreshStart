@@ -164,9 +164,11 @@ layoutRouter.post("/train-save-model/", async (req, res) => {
 });
 
 /* generates predictionby laoding in saved model, given a row of input data
-run via postman: 
+run via postman: http://localhost:3001/layout/get-prediction
+Data:
+
 */
-layoutRouter.post("/train-save-model/", async (req, res) => {
+layoutRouter.get("/get-prediction/", async (req, res) => {
     try {
         
         const { X_tensor, Y_tensor } = await prepareData(); // clean data
@@ -176,7 +178,8 @@ layoutRouter.post("/train-save-model/", async (req, res) => {
         // test model 
         const exampleInput = [1, 100, 6.5, 40, 3.5, 0, 0, 0, 200]; // Example input
         const model = await loadModel();
-        predicted_crop_yield = await predict(model, exampleInput);
+        const predicted_crop_yield = await predict(model, exampleInput);
+        console.log("Predicted crop yield (kg per m^2) route:", predicted_crop_yield);
 
         res.status(200).json({message:"success train save model"});
     } catch (error) {
