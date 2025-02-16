@@ -101,7 +101,6 @@ const LayoutPage = () => {
     }
   };
 
-
   const predictYield = async () => {
     console.log("before");
     console.log("2. cropAreas:", cropAreas);
@@ -126,25 +125,25 @@ const LayoutPage = () => {
       })),
     };
     console.log("after");
-  
-    
+
     const response = await axios.post("http://localhost:3001/layout/get-prediction", layoutData);
     const predictedYields = response.data.predictedYields;
-    console.log("response-predict: ",response.data );
+    console.log("response-predict: ", response.data);
     // Update the crop areas with predicted yields
     console.log("before1");
-    setCropAreas(currentCropAreas => 
+    setCropAreas(currentCropAreas =>
       currentCropAreas.map(crop => {
         const predictedYield = predictedYields.find(yieldData => yieldData.cropId === crop.id);
         return predictedYield ? { ...crop, predictedYield: predictedYield.value } : crop;
       })
     );
     console.log("after1");
-    
+
     // compute total yield for the layout (example: sum of predicted yields)
     const totalYield = cropAreas.reduce((sum, crop) => sum + (crop.predictedYield || 0), 0);
     console.log("Total Yield for Layout:", totalYield);
-    
+  };
+
   return (
     <div className="layout-wrapper">
       <div className="layout-page">
@@ -152,7 +151,7 @@ const LayoutPage = () => {
           <h1>Farm Layout Planner</h1>
           <p>Design and organize your farm layout efficiently</p>
         </div>
-        
+
         <div className="layout-content">
           <div className="crop-edit-sidebar">
             {selectedCrop ? (
@@ -306,31 +305,33 @@ const LayoutPage = () => {
           <div className="crop-data-sidebar">
             <h2>Crop Areas Overview</h2>
             <div className="crop-list">
-              {cropAreas.map((crop) => (
-                <div 
-                  key={crop.id} 
-                  className={`crop-data-item ${selectedCrop && selectedCrop.id === crop.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedCrop(crop)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setSelectedCrop(crop);
-                    }
-                  }}
-                >
-                  <h3>{crop.cropType !== "Unknown" ? crop.cropType : "Undefined Area"}</h3>
-                  <div className="crop-details">
-                    <p><strong>Irrigation:</strong> {crop.irrigation}</p>
-                    <p><strong>Fertilizer:</strong> {crop.fertilizerType}</p>
-                    <p><strong>Method:</strong> {crop.fertilizerMethod}</p>
-                    <p><strong>Size:</strong> {Math.round(crop.width * crop.height)} sq m</p>
-                    <p><strong>Density:</strong> {crop.density} plants/m^2</p>
-                    <div className="yield-info">
-                      <p><strong>Expected Yield:</strong></p>
-                      <div className="yield-details">
-                        <span className="yield-value">{crop.predictedYield !== undefined ? crop.predictedYield : '--'}</span>
-                        <span className="yield-unit"> kg/m2</span>
+              {cropAreas.length > 0 ? (
+                cropAreas.map((crop) => (
+                  <div 
+                    key={crop.id} 
+                    className={`crop-data-item ${selectedCrop && selectedCrop.id === crop.id ? 'selected' : ''}`}
+                    onClick={() => setSelectedCrop(crop)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setSelectedCrop(crop);
+                      }
+                    }}
+                  >
+                    <h3>{crop.cropType !== "Unknown" ? crop.cropType : "Undefined Area"}</h3>
+                    <div className="crop-details">
+                      <p><strong>Irrigation:</strong> {crop.irrigation}</p>
+                      <p><strong>Fertilizer:</strong> {crop.fertilizerType}</p>
+                      <p><strong>Method:</strong> {crop.fertilizerMethod}</p>
+                      <p><strong>Size:</strong> {Math.round(crop.width * crop.height)} sq m</p>
+                      <p><strong>Density:</strong> {crop.density} plants/m^2</p>
+                      <div className="yield-info">
+                        <p><strong>Expected Yield:</strong></p>
+                        <div className="yield-details">
+                          <span className="yield-value">{crop.predictedYield !== undefined ? crop.predictedYield : '--'}</span>
+                          <span className="yield-unit"> kg/m2</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -339,7 +340,7 @@ const LayoutPage = () => {
                 <div className="no-crops-message">
                   No crop areas added yet. Click and drag on the farm area to create one.
                 </div>         
-              ))}
+              )}
               <button onClick={predictYield} >Predict Yield for crop areas</button>
               {cropAreas.length === 0 && (
                 <p className="no-crops">No crop areas defined yet. Click and drag on the farm area to create one.</p>
