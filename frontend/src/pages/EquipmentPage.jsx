@@ -65,6 +65,16 @@ const NeededEquipmentCard = ({ item, onEdit, onDelete }) => {
   const [showNotes, setShowNotes] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
+  const handleResearch = () => {
+    const searchQuery = encodeURIComponent(`${item.name} farm equipment purchasing information price`);
+    window.open(`https://www.google.com/search?q=${searchQuery}`, '_blank');
+  };
+
+  const handlePurchase = () => {
+    const searchQuery = encodeURIComponent(`${item.name} farm equipment`);
+    window.open(`https://www.amazon.com/s?k=${searchQuery}`, '_blank');
+  };
+
   return (
     <>
       <div className="equipment-card needed">
@@ -112,8 +122,18 @@ const NeededEquipmentCard = ({ item, onEdit, onDelete }) => {
             )}
           </div>
           <div className="equipment-actions">
-            <button className="action-button purchase">Purchase</button>
-            <button className="action-button research">Research</button>
+            <button 
+              className="action-button purchase"
+              onClick={handlePurchase}
+            >
+              Purchase
+            </button>
+            <button 
+              className="action-button research"
+              onClick={handleResearch}
+            >
+              Research
+            </button>
           </div>
         </div>
       </div>

@@ -11,6 +11,19 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    gap: 4rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-logo {
+    width: 400px;
+    height: auto;
+    object-fit: contain;
 }
 
 .auth-card {
@@ -122,9 +135,24 @@
 }
 
 /* Mobile responsiveness */
+@media (max-width: 1200px) {
+    .auth-page {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .login-logo {
+        width: 300px;
+    }
+}
+
 @media (max-width: 700px) {
     .auth-card {
         width: 95%;
         padding: 2rem;
+    }
+
+    .login-logo {
+        width: 200px;
     }
 }

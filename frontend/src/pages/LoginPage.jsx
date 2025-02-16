@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import '../styles/LoginStyle.css';
+import FreshStartLogo from '../styles/Images/FreshStart.png';
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -34,6 +35,9 @@ const LoginPage = () => {
 
     return (
         <div className="auth-page">
+            <div className="logo-section">
+                <img src={FreshStartLogo} alt="FreshStart Logo" className="login-logo" />
+            </div>
             <div className="auth-card">
                 <div className="auth-header">
                     <h1>Welcome Back</h1>
