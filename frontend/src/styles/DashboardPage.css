@@ -176,13 +176,14 @@
 
 .layout-stats {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     background: rgba(42, 39, 46, 0.4);
     border: 1px solid rgba(67, 135, 59, 0.3);
     border-radius: 4px;
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 1rem;
 }
 
 .stat-card {
@@ -194,6 +195,7 @@
     flex-direction: column;
     gap: 0.5rem;
     backdrop-filter: blur(4px);
+    min-width: 0; /* Prevent overflow in grid */
 }
 
 .stat-card h3 {
@@ -462,11 +464,19 @@
     .layout-list, .todo-section {
         flex: 1 1 300px;
     }
+
+    .layout-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
     .layout-list, .todo-section {
         width: 100%;
+    }
+
+    .layout-stats {
+        grid-template-columns: 1fr;
     }
 }
 
