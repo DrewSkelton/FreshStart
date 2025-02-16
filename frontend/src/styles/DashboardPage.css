@@ -29,7 +29,7 @@
     max-width: min(1600px, 95vw);
     margin: 0 auto;
     padding: min(2rem, 4vw);
-    min-height: 100vh;
+    min-height: 150vh;
     display: flex;
     flex-direction: column;
     gap: min(2rem, 4vw);
@@ -106,23 +106,28 @@
     padding: 1.5rem;
     border: 1px solid rgba(67, 135, 59, 0.3);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    min-height: calc(100vh - 4rem);
+    min-height: calc(70vh - 4rem);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     backdrop-filter: blur(8px);
 }
 
-.layout-canvas-container {
+.layout-canvas-container, .layout-stats {
     width: 800px;
-    height: 500px;
+    height: 400px;
     margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background: rgba(42, 39, 46, .0);
     border-radius: 8px;
-    padding: 0.75rem 0.25rem;
+    padding: 0.75rem;
+    box-sizing: border-box;
+}
+
+.layout-canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
 }
 
 .layout-canvas {
@@ -134,6 +139,14 @@
     border-radius: 4px;
     backdrop-filter: blur(4px);
     overflow: auto;
+}
+
+.layout-canvas > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: fit-content;
+    min-height: fit-content;
 }
 
 /* Custom scrollbar for layout canvas */
@@ -163,9 +176,13 @@
 
 .layout-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    padding-top: 1rem;
+    background: rgba(42, 39, 46, 0.4);
+    border: 1px solid rgba(67, 135, 59, 0.3);
+    border-radius: 4px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .stat-card {
@@ -791,9 +808,9 @@ input:not(:checked) + .slider .toggle-label:first-child {
     color: #ffffff;
 }
 
-/* Add responsive handling for the canvas container */
+/* Add responsive handling for both containers */
 @media (max-width: 900px) {
-    .layout-canvas-container {
+    .layout-canvas-container, .layout-stats {
         width: 100%;
         max-width: 800px;
     }

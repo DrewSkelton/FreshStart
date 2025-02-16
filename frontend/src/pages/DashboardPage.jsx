@@ -168,6 +168,30 @@ const DashboardPage = () => {
                                         </div>
 
                                         <div className="stat-card">
+                                            <h3>Estimated Total Yield</h3>
+                                            <div className="value">
+                                                {(() => {
+                                                    const yieldEstimates = {
+                                                        'Corn': 7.5,      // tons per hectare
+                                                        'Wheat': 3.5,     // tons per hectare
+                                                        'Tomatoes': 35,   // tons per hectare
+                                                        'Potatoes': 25,   // tons per hectare
+                                                        'Soybeans': 2.8   // tons per hectare
+                                                    };
+                                                    
+                                                    const totalYield = selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                        const areaInHectares = (crop.width * crop.height) / 10000; // convert m² to hectares
+                                                        const cropYield = yieldEstimates[crop.cropType] || 0;
+                                                        return acc + (areaInHectares * cropYield);
+                                                    }, 0);
+                                                    
+                                                    return Math.round(totalYield * 10) / 10;
+                                                })()}
+                                            </div>
+                                            <div className="subtext">Tons per year</div>
+                                        </div>
+
+                                        <div className="stat-card">
                                             <h3>Crop Distribution</h3>
                                             <div className="crop-distribution">
                                                 {selectedLayout.crop_areas.reduce((acc, crop) => {
