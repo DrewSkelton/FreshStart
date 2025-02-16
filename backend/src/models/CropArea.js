@@ -9,7 +9,8 @@ const CropAreaSchema = new mongoose.Schema({
     y: { type: Number, required: true },  // Y position in the layout
     irrigation: { type: String, required: true },
     fertilizerType: { type: String, required: true },
-    fertilizerMethod: { type: String, required: true }
+    fertilizerMethod: { type: String, required: true },
+    predictedYield: { type: Number, required: false }
 });
 
 

@@ -97,6 +97,30 @@ layoutRouter.post("/create-layout", async (req, res) => {
 });
 
 
+/* 
+gets all of the layout objects
+*/
+layoutRouter.get("/get-layouts", async (req, res) => {
+    try {
+        const layouts = await LayoutModel.find().populate("crop_areas"); // Populate crop areas
+        res.status(200).json(layouts);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching layouts", error: error.message });
+    }
+});
 
+
+/* gets a single layout object */
+layoutRouter.get("/get-layout/:id", async (req, res) => {
+    try {
+        const layout = await LayoutModel.findById(req.params.id).populate("crop_areas"); // Populate crop areas
+        if (!layout) {
+            return res.status(404).json({ message: "Layout not found" });
+        }
+        res.status(200).json(layout);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching layout", error: error.message });
+    }
+});
 
 export default layoutRouter; 
