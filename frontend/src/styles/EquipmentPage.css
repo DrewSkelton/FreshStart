@@ -685,4 +685,140 @@ input:checked + .toggle-slider:before {
 
 .notes-modal-content p {
   margin: 0;
+}
+
+.equipment-card.needed {
+  border-style: dashed;
+  background-color: rgba(53, 50, 56, 0.8);
+}
+
+.equipment-card.needed:hover {
+  border-color: #43873b80;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.priority-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.priority-badge.high {
+  background-color: #ef444420;
+  color: #ef4444;
+}
+
+.priority-badge.medium {
+  background-color: #eab30820;
+  color: #eab308;
+}
+
+.priority-badge.low {
+  background-color: #22c55e20;
+  color: #22c55e;
+}
+
+.needed-notes {
+  font-style: italic;
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.action-button.purchase {
+  background-color: #43873b20;
+  color: #43873b;
+}
+
+.action-button.purchase:hover {
+  background-color: #43873b40;
+}
+
+.action-button.research {
+  background-color: #6366f120;
+  color: #6366f1;
+}
+
+.action-button.research:hover {
+  background-color: #6366f140;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.card-header h3 {
+  margin: 0;
+  padding-right: 2rem;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: #e4e4e7;
+  font-size: 1.5rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.equipment-card:hover .menu-button {
+  opacity: 0.8;
+  pointer-events: auto;
+}
+
+.menu-button:hover {
+  background-color: rgba(67, 135, 59, 0.1);
+  color: #ffffff;
+  opacity: 1;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #353238;
+  border: 1px solid rgba(67, 135, 59, 0.3);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.menu-dropdown button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #e4e4e7;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.menu-dropdown button:hover {
+  background-color: rgba(67, 135, 59, 0.1);
+  color: #ffffff;
+}
+
+.menu-dropdown button:not(:last-child) {
+  border-bottom: 1px solid rgba(67, 135, 59, 0.2);
 } 

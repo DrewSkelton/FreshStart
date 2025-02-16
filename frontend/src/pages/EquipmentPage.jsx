@@ -61,10 +61,72 @@ const EquipmentCard = ({ item, onEdit }) => {
   );
 };
 
+const NeededEquipmentCard = ({ item, onEdit, onDelete }) => {
+  const [showNotes, setShowNotes] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <>
+      <div className="equipment-card needed">
+        <div className="equipment-image">
+          <div className="image-placeholder"></div>
+        </div>
+        <div className="equipment-info">
+          <div className="card-header">
+            <h3>{item.name}</h3>
+            <div className="menu-container">
+              <button 
+                className="menu-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu(!showMenu);
+                }}
+              >
+                ⋮
+              </button>
+              {showMenu && (
+                <div className="menu-dropdown">
+                  <button onClick={() => {
+                    setShowMenu(false);
+                    onEdit(item);
+                  }}>
+                    Edit
+                  </button>
+                  <button onClick={() => {
+                    setShowMenu(false);
+                    onDelete(item.id);
+                  }}>
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={`priority-badge ${item.priority}`}>
+            {item.priority} priority
+          </div>
+          <div className="equipment-details">
+            <p><strong>Estimated Cost:</strong> {item.estimatedCost}</p>
+            {item.notes && (
+              <p className="needed-notes">{item.notes}</p>
+            )}
+          </div>
+          <div className="equipment-actions">
+            <button className="action-button purchase">Purchase</button>
+            <button className="action-button research">Research</button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const EquipmentPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [editingEquipment, setEditingEquipment] = useState(null);
   const [showNeededEquipment, setShowNeededEquipment] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingNeededEquipment, setEditingNeededEquipment] = useState(null);
   const [equipment, setEquipment] = useState([
     {
       id: 1,
@@ -118,6 +180,54 @@ const EquipmentPage = () => {
     }
   ]);
 
+  const [neededEquipment, setNeededEquipment] = useState([
+    {
+      id: 101,
+      name: 'Advanced Sprinkler System',
+      category: 'irrigation',
+      priority: 'high',
+      estimatedCost: '$2,500',
+      image: '/images/sprinkler.jpg',
+      notes: 'Needed for more efficient water distribution in the new field section.',
+    },
+    {
+      id: 102,
+      name: 'Precision Seeder',
+      category: 'tools',
+      priority: 'medium',
+      estimatedCost: '$1,800',
+      image: '/images/seeder.jpg',
+      notes: 'Would improve planting efficiency and seed spacing accuracy.',
+    },
+    {
+      id: 103,
+      name: 'Automated Fertilizer System',
+      category: 'fertilizing',
+      priority: 'high',
+      estimatedCost: '$3,200',
+      image: '/images/auto-fertilizer.jpg',
+      notes: 'Required for precise nutrient application in greenhouse expansion.',
+    },
+    {
+      id: 104,
+      name: 'Cold Storage Unit',
+      category: 'storage',
+      priority: 'medium',
+      estimatedCost: '$5,000',
+      image: '/images/cold-storage.jpg',
+      notes: 'Needed for extending produce shelf life and market flexibility.',
+    },
+    {
+      id: 105,
+      name: 'Soil Analysis Kit',
+      category: 'other',
+      priority: 'low',
+      estimatedCost: '$800',
+      image: '/images/soil-kit.jpg',
+      notes: 'Would help optimize soil management and fertilization strategies.',
+    }
+  ]);
+
   const categories = [
     { id: 'all', name: 'All Equipment' },
     { id: 'irrigation', name: 'Irrigation Systems' },
@@ -134,20 +244,100 @@ const EquipmentPage = () => {
     setEditingEquipment(null);
   };
 
-  // Calculate equipment statistics
-  const stats = useMemo(() => {
-    const totalItems = equipment.length;
-    const available = equipment.filter(item => item.status === 'available').length;
-    const inUse = equipment.filter(item => item.status === 'in-use').length;
-    const maintenance = equipment.filter(item => item.status === 'maintenance').length;
-
-    return {
-      totalItems,
-      available,
-      inUse,
-      maintenance
+  const handleAddEquipment = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newEquipment = {
+      id: Date.now(),
+      name: formData.get('name'),
+      category: formData.get('category'),
+      status: formData.get('status'),
+      maintenance: formData.get('maintenance'),
+      lastService: formData.get('lastService'),
+      notes: formData.get('notes'),
+      image: '/images/placeholder.jpg',
     };
-  }, [equipment]);
+    setEquipment([...equipment, newEquipment]);
+    setShowAddModal(false);
+  };
+
+  const handleAddNeededEquipment = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newEquipment = {
+      id: Date.now(),
+      name: formData.get('name'),
+      category: formData.get('category'),
+      priority: formData.get('priority'),
+      estimatedCost: formData.get('estimatedCost'),
+      notes: formData.get('notes'),
+      image: '/images/placeholder.jpg',
+    };
+    setNeededEquipment([...neededEquipment, newEquipment]);
+    setShowAddModal(false);
+  };
+
+  // Add delete handler for needed equipment
+  const handleDeleteNeededEquipment = (id) => {
+    setNeededEquipment(neededEquipment.filter(item => item.id !== id));
+  };
+
+  // Add edit handler for needed equipment
+  const handleEditNeededEquipment = (updatedEquipment) => {
+    setNeededEquipment(neededEquipment.map(item => 
+      item.id === updatedEquipment.id ? updatedEquipment : item
+    ));
+    setEditingNeededEquipment(null);
+  };
+
+  // Calculate equipment statistics based on current view
+  const stats = useMemo(() => {
+    if (showNeededEquipment) {
+      const totalNeeded = neededEquipment.length;
+      const highPriority = neededEquipment.filter(item => item.priority === 'high').length;
+      const mediumPriority = neededEquipment.filter(item => item.priority === 'medium').length;
+      const lowPriority = neededEquipment.filter(item => item.priority === 'low').length;
+
+      return {
+        totalItems: totalNeeded,
+        available: highPriority,
+        inUse: mediumPriority,
+        maintenance: lowPriority
+      };
+    } else {
+      const totalItems = equipment.length;
+      const available = equipment.filter(item => item.status === 'available').length;
+      const inUse = equipment.filter(item => item.status === 'in-use').length;
+      const maintenance = equipment.filter(item => item.status === 'maintenance').length;
+
+      return {
+        totalItems,
+        available,
+        inUse,
+        maintenance
+      };
+    }
+  }, [equipment, neededEquipment, showNeededEquipment]);
+
+  // Update the stats labels based on view mode
+  const getStatLabels = () => {
+    if (showNeededEquipment) {
+      return {
+        total: 'Total Needed',
+        available: 'High Priority',
+        inUse: 'Medium Priority',
+        maintenance: 'Low Priority'
+      };
+    }
+    return {
+      total: 'Total Items',
+      available: 'Available',
+      inUse: 'In Use',
+      maintenance: 'Maintenance'
+    };
+  };
+
+  const statLabels = getStatLabels();
 
   return (
     <div className="equipment-page-wrapper">
@@ -179,19 +369,19 @@ const EquipmentPage = () => {
               <div className="stats-grid">
                 <div className="stat-item">
                   <span className="stat-value">{stats.totalItems}</span>
-                  <span className="stat-label">Total Items</span>
+                  <span className="stat-label">{statLabels.total}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value">{stats.available}</span>
-                  <span className="stat-label">Available</span>
+                  <span className="stat-label">{statLabels.available}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value">{stats.inUse}</span>
-                  <span className="stat-label">In Use</span>
+                  <span className="stat-label">{statLabels.inUse}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value">{stats.maintenance}</span>
-                  <span className="stat-label">Maintenance</span>
+                  <span className="stat-label">{statLabels.maintenance}</span>
                 </div>
               </div>
             </div>
@@ -207,7 +397,11 @@ const EquipmentPage = () => {
                     placeholder="Search equipment..."
                     className="search-input"
                   />
-                  <button className="add-equipment-button" title={`Add New ${showNeededEquipment ? 'Needed' : ''} Equipment`}>
+                  <button 
+                    className="add-equipment-button" 
+                    title={`Add New ${showNeededEquipment ? 'Needed' : ''} Equipment`}
+                    onClick={() => setShowAddModal(true)}
+                  >
                     +
                   </button>
                 </div>
@@ -232,13 +426,28 @@ const EquipmentPage = () => {
             </div>
 
             <div className="equipment-grid">
-              {equipment.map(item => (
-                <EquipmentCard
-                  key={item.id}
-                  item={item}
-                  onEdit={setEditingEquipment}
-                />
-              ))}
+              {showNeededEquipment ? (
+                neededEquipment
+                  .filter(item => selectedCategory === 'all' || item.category === selectedCategory)
+                  .map(item => (
+                    <NeededEquipmentCard 
+                      key={item.id} 
+                      item={item} 
+                      onEdit={setEditingNeededEquipment}
+                      onDelete={handleDeleteNeededEquipment}
+                    />
+                  ))
+              ) : (
+                equipment
+                  .filter(item => selectedCategory === 'all' || item.category === selectedCategory)
+                  .map(item => (
+                    <EquipmentCard
+                      key={item.id}
+                      item={item}
+                      onEdit={setEditingEquipment}
+                    />
+                  ))
+              )}
             </div>
           </main>
         </div>
@@ -346,6 +555,235 @@ const EquipmentPage = () => {
                     type="button"
                     className="cancel-button"
                     onClick={() => setEditingEquipment(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Add Equipment Modal */}
+        {showAddModal && (
+          <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+            <div className="edit-modal" onClick={e => e.stopPropagation()}>
+              <h2>Add New {showNeededEquipment ? 'Needed' : ''} Equipment</h2>
+              <form onSubmit={showNeededEquipment ? handleAddNeededEquipment : handleAddEquipment}>
+                <div className="form-group">
+                  <label htmlFor="name">Equipment Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Enter equipment name..."
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="category">Category</label>
+                  <select
+                    id="category"
+                    name="category"
+                    required
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select a category...</option>
+                    {categories.filter(cat => cat.id !== 'all').map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {showNeededEquipment ? (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="priority">Priority Level</label>
+                      <select
+                        id="priority"
+                        name="priority"
+                        required
+                        defaultValue="medium"
+                      >
+                        <option value="high">High Priority</option>
+                        <option value="medium">Medium Priority</option>
+                        <option value="low">Low Priority</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="estimatedCost">Estimated Cost</label>
+                      <input
+                        type="text"
+                        id="estimatedCost"
+                        name="estimatedCost"
+                        required
+                        placeholder="$0.00"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="status">Status</label>
+                      <select
+                        id="status"
+                        name="status"
+                        required
+                        defaultValue="available"
+                      >
+                        <option value="available">Available</option>
+                        <option value="in-use">In Use</option>
+                        <option value="maintenance">Maintenance</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="maintenance">Maintenance Status</label>
+                      <select
+                        id="maintenance"
+                        name="maintenance"
+                        required
+                        defaultValue="Good"
+                      >
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Needs Repair">Needs Repair</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="lastService">Last Service Date</label>
+                      <input
+                        type="date"
+                        id="lastService"
+                        name="lastService"
+                        required
+                        defaultValue={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="form-group">
+                  <label htmlFor="notes">Notes</label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder={`Add any additional notes about the ${showNeededEquipment ? 'needed' : ''} equipment...`}
+                    rows="4"
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button type="submit" className="save-button">
+                    Add {showNeededEquipment ? 'Needed' : ''} Equipment
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Needed Equipment Modal */}
+        {editingNeededEquipment && (
+          <div className="modal-overlay">
+            <div className="edit-modal">
+              <h2>Edit Needed Equipment</h2>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const updatedEquipment = {
+                  ...editingNeededEquipment,
+                  name: formData.get('name'),
+                  category: formData.get('category'),
+                  priority: formData.get('priority'),
+                  estimatedCost: formData.get('estimatedCost'),
+                  notes: formData.get('notes'),
+                };
+                handleEditNeededEquipment(updatedEquipment);
+              }}>
+                <div className="form-group">
+                  <label htmlFor="name">Equipment Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    defaultValue={editingNeededEquipment.name}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="category">Category</label>
+                  <select
+                    id="category"
+                    name="category"
+                    defaultValue={editingNeededEquipment.category}
+                    required
+                  >
+                    {categories.filter(cat => cat.id !== 'all').map(category => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="priority">Priority Level</label>
+                  <select
+                    id="priority"
+                    name="priority"
+                    defaultValue={editingNeededEquipment.priority}
+                    required
+                  >
+                    <option value="high">High Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="low">Low Priority</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="estimatedCost">Estimated Cost</label>
+                  <input
+                    type="text"
+                    id="estimatedCost"
+                    name="estimatedCost"
+                    defaultValue={editingNeededEquipment.estimatedCost}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="notes">Notes</label>
+                  <textarea
+                    id="notes"
+                    name="notes"
+                    defaultValue={editingNeededEquipment.notes}
+                    placeholder="Add any additional notes about the needed equipment..."
+                    rows="4"
+                  />
+                </div>
+
+                <div className="modal-actions">
+                  <button type="submit" className="save-button">
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={() => setEditingNeededEquipment(null)}
                   >
                     Cancel
                   </button>

@@ -21,41 +21,6 @@ body {
   background-color: var(--bg-primary);
 }
 
-.theme-toggle-container {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1000;
-}
-
-.theme-toggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #353238;
-  border: 1px solid #43873b40;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.theme-toggle:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-color: #43873b80;
-}
-
-.theme-toggle:active {
-  transform: translateY(0);
-}
-
 /* Base theme variables will be added when you describe the light mode details */
 :root[data-theme="dark"] {
   /* Current dark theme colors will be moved here when implementing light mode */

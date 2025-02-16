@@ -1,31 +1,13 @@
-import { useState, useEffect } from 'react'
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LayoutPage from "./pages/LayoutPage";
 import EquipmentPage from "./pages/EquipmentPage";
 import './App.css';
 import DashboardPage from "./pages/DashboardPage";
 
-
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
-
   return (
     <Router>
       <div className="app-container">
-        <div className="theme-toggle-container">
-          <button 
-            className="theme-toggle"
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
-          >
-            {isDarkMode ? '☀️' : '🌙'}
-          </button>
-        </div>
         <Routes>
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/layout-planning" element={<LayoutPage />} />
