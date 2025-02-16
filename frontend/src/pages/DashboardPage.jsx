@@ -5,6 +5,14 @@ import { getCropColor } from "../components/CropArea";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
+    // Add number formatting helper function
+    const formatNumber = (num) => {
+        if (num === undefined || num === null) return '--';
+        const formatted = Number(num).toFixed(4);
+        // Remove trailing zeros but keep at least one decimal
+        return formatted.replace(/\.?0+$/, '') + (formatted.includes('.') ? '' : '.0');
+    };
+
     const [layouts, setLayouts] = useState([]);
     const [selectedLayoutId, setSelectedLayoutId] = useState(null);
     const [selectedLayout, setSelectedLayout] = useState(null);
@@ -119,7 +127,7 @@ const DashboardPage = () => {
                                 onClick={() => setSelectedLayoutId(layout._id)}
                             >
                                 <h3>{layout.name}</h3>
-                                <p>Width: {layout.width} | Height: {layout.height}</p>
+                                <p>Width: {formatNumber(layout.width)} | Height: {formatNumber(layout.height)}</p>
                             </div>
                         ))}
                             {layouts.length === 0 && (
@@ -159,7 +167,7 @@ const DashboardPage = () => {
                                     <div className="layout-stats">
                                         <div className="stat-card">
                                             <h3>Total Area</h3>
-                                            <div className="value">{selectedLayout.width * selectedLayout.height}m²</div>
+                                            <div className="value">{formatNumber(selectedLayout.width * selectedLayout.height)}m²</div>
                                             <div className="subtext">Total farm area</div>
                                         </div>
 
@@ -172,7 +180,7 @@ const DashboardPage = () => {
                                         <div className="stat-card">
                                             <h3>Utilized Area</h3>
                                             <div className="value">
-                                                {Math.round(selectedLayout.crop_areas.reduce((acc, crop) => acc + (crop.width * crop.height), 0))}m²
+                                                {formatNumber(selectedLayout.crop_areas.reduce((acc, crop) => acc + (crop.width * crop.height), 0))}m²
                                             </div>
                                             <div className="subtext">Total planted area</div>
                                         </div>
@@ -180,25 +188,9 @@ const DashboardPage = () => {
                                         <div className="stat-card">
                                             <h3>Estimated Total Yield</h3>
                                             <div className="value">
-                                                {(() => {
-                                                    const yieldEstimates = {
-                                                        'Corn': 7.5,      // tons per hectare
-                                                        'Wheat': 3.5,     // tons per hectare
-                                                        'Tomatoes': 35,   // tons per hectare
-                                                        'Potatoes': 25,   // tons per hectare
-                                                        'Soybeans': 2.8   // tons per hectare
-                                                    };
-                                                    
-                                                    const totalYield = selectedLayout.crop_areas.reduce((acc, crop) => {
-                                                        const areaInHectares = (crop.width * crop.height) / 10000; // convert m² to hectares
-                                                        const cropYield = yieldEstimates[crop.cropType] || 0;
-                                                        return acc + (areaInHectares * cropYield);
-                                                    }, 0);
-                                                    
-                                                    return selectedLayout.total_yield;
-                                                })()}
+                                                {formatNumber(selectedLayout.total_yield)}
                                             </div>
-                                            <div className="subtext">kg m^2</div>
+                                            <div className="subtext">kg/m²</div>
                                         </div>
 
                                         <div className="stat-card">
@@ -209,12 +201,12 @@ const DashboardPage = () => {
                                                     if (existing) {
                                                         existing.area += crop.width * crop.height;
                                                     } else {
-                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height, predictedYield:crop.predictedYield });
+                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height, predictedYield: crop.predictedYield });
                                                     }
                                                     return acc;
                                                 }, []).map(crop => (
                                                     <div key={crop.type} className="crop-tag">
-                                                        {crop.type} <span className="area">{crop.predictedYield}-kg/m2</span>
+                                                        {crop.type} <span className="area">{formatNumber(crop.predictedYield)} kg/m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -233,7 +225,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.method} className="method-tag">
-                                                        {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.method} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -252,7 +244,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.type} className="method-tag">
-                                                        {item.type} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.type} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -271,7 +263,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.method} className="method-tag">
-                                                        {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.method} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -290,7 +282,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.type} className="method-tag">
-                                                        {item.type} <span className="area">{item.density}</span>
+                                                        {item.type} <span className="area">{formatNumber(item.density)}</span>
                                                     </div>
                                                 ))}
                                             </div>
