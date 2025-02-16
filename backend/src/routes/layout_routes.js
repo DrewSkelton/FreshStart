@@ -15,46 +15,55 @@ import CropAreaModel from "../models/CropArea.js";
 /* Creates a layout object when user clicks save button 
 
 Example data recived with request:
-layout-dimensions: {
-  "width": 640,
-  "height": 426
-}
-crop-areas: [
-  {
-    "cropType": "Corn",
-    "irrigation": "sprinkler",
-    "fertilizerType": "phosphorus",
-    "fertilizerMethod": "side-dressing",
-    "width": 520,
-    "height": 130,
-    "x": 52.8515625,
-    "y": 216.5390625
+create-layout-request-data: {
+  "name": "Farm 5",
+  "dimensions": {
+    "width": 713,
+    "height": 476
   },
-  {
-    "cropType": "Tomatoes",
-    "irrigation": "sprinkler",
-    "fertilizerType": "phosphorus",
-    "fertilizerMethod": "fertigation",
-    "width": 235,
-    "height": 66,
-    "x": 191.8515625,
-    "y": 45.5390625
-  }
-]
+  "soil_ph": 1,
+  "soil_npk": 1,
+  "soil_om": 1,
+  "crops": [
+    {
+      "cropType": "Corn",
+      "irrigation": "drip",
+      "fertilizerType": "nitrogen",
+      "fertilizerMethod": "broadcasting",
+      "width": 201,
+      "height": 109,
+      "x": 199.7734375,
+      "y": 57.515625,
+      "density": "12"
+    },
+    {
+      "cropType": "Wheat",
+      "irrigation": "drip",
+      "fertilizerType": "nitrogen",
+      "fertilizerMethod": "broadcasting",
+      "width": 135,
+      "height": 279,
+      "x": 491.7734375,
+      "y": 75.515625,
+      "density": "14"
+    }
+  ]
+}
 Total farm area is in meters, while crop area area is in square meters. 
 */
 layoutRouter.post("/create-layout", async (req, res) => {
     try {
-        const { name, dimensions, crops } = req.body;
+        const { name, dimensions, soil_ph,soil_npk, soil_om,  crops } = req.body;
         console.log("layout-name: " + name);
         console.log("layout-dimensions: " + JSON.stringify(dimensions, null, 2));
         console.log("crop-areas: " + JSON.stringify(crops, null, 2));
+        console.log("create-layout-request-data: " + JSON.stringify(req.body, null, 2))
 
         let total_area = 0;
         const cropAreaIds = [];
         for (const cropAreaData of crops) {
             // destructure cropAreaData to extract fields like cropType, area, width, height, etc.
-            const { cropType, width, height, x, y, irrigation, fertilizerType, fertilizerMethod } = cropAreaData;
+            const { cropType, width, height, x, y, irrigation, fertilizerType, fertilizerMethod, density } = cropAreaData;
             let cur_area = width * height;  // compute area of current crop area
             total_area += cur_area; // update area of layout-total-area
 
@@ -68,7 +77,8 @@ layoutRouter.post("/create-layout", async (req, res) => {
                 y,
                 irrigation,
                 fertilizerType,
-                fertilizerMethod
+                fertilizerMethod, 
+                density
             });
 
             // save the crop area and store its ID in the cropAreaIds array
@@ -84,7 +94,10 @@ layoutRouter.post("/create-layout", async (req, res) => {
             total_cost,
             total_area,
             width: dimensions.width,
-            height: dimensions.height
+            height: dimensions.height,
+            soil_ph:soil_ph,
+            soil_npk:soil_npk,
+            soil_om:soil_om
         });
 
         // step 3: Save the layout object to the database

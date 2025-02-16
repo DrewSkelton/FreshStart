@@ -21,6 +21,10 @@ const LayoutPage = () => {
   const [cropAreas, setCropAreas] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState(null);
 
+  const [soilPH, setSoilPH] = useState(1);
+  const [soilNPK, setSoilNPK] = useState(1);
+  const [soilOM, setSoilOM] = useState(1);
+
   // update dimensions on window resize, using use effect
   useEffect(() => {
     const handleResize = () => {
@@ -39,6 +43,9 @@ const LayoutPage = () => {
     const layoutData = {
       name: name,
       dimensions: farmDimensions,
+      soil_ph: soilPH,
+      soil_npk: soilNPK,
+      soil_om: soilOM,
       crops: cropAreas.map((crop) => ({
         cropType: crop.cropType,
         irrigation: crop.irrigation,
@@ -47,7 +54,8 @@ const LayoutPage = () => {
         width: crop.width,
         height: crop.height,
         x: crop.x, // (x,y) coors
-        y: crop.y
+        y: crop.y,
+        density: crop.density
       })),
     };
 
@@ -127,6 +135,52 @@ const LayoutPage = () => {
                     min="1"
                   />
                 </div>
+
+                <div className="input-group">
+                  <label htmlFor="soilPH">Soil pH Level:</label>
+                  <input
+                    id="soilPH"
+                    type="number"
+                    value={soilPH || ''} // Allow empty string when null/undefined
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? '' : Number(e.target.value);
+                      setSoilPH(value);
+                    }}
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="soilNPK">Soil NPK Level:</label>
+                  <input
+                    id="soilNPK"
+                    type="number"
+                    value={soilNPK || ''} // Allow empty string when null/undefined
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? '' : Number(e.target.value);
+                      setSoilNPK(value);
+                    }}
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label htmlFor="soilOM">Soil Organic Matter %:</label>
+                  <input
+                    id="soilOM"
+                    type="number"
+                    value={soilOM || ''} // Allow empty string when null/undefined
+                    onChange={(e) => {
+                      const value = e.target.value === '' ? '' : Number(e.target.value);
+                      setSoilOM(value);
+                    }}
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
               </div>
 
               <div className="instructions">
@@ -187,6 +241,7 @@ const LayoutPage = () => {
                     <p><strong>Fertilizer:</strong> {crop.fertilizerType}</p>
                     <p><strong>Method:</strong> {crop.fertilizerMethod}</p>
                     <p><strong>Size:</strong> {Math.round(crop.width * crop.height)} sq m</p>
+                    <p><strong>Density:</strong> {crop.density} plants/m^2</p>
                     <div className="yield-info">
                       <p><strong>Expected Yield:</strong></p>
                       <div className="yield-details">
