@@ -2,8 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/DashboardPage.css"; 
 import { getCropColor } from "../components/CropArea";
+import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
+    // Add number formatting helper function
+    const formatNumber = (num) => {
+        if (num === undefined || num === null) return '--';
+        const formatted = Number(num).toFixed(4);
+        // Remove trailing zeros but keep at least one decimal
+        return formatted.replace(/\.?0+$/, '') + (formatted.includes('.') ? '' : '.0');
+    };
+
     const [layouts, setLayouts] = useState([]);
     const [selectedLayoutId, setSelectedLayoutId] = useState(null);
     const [selectedLayout, setSelectedLayout] = useState(null);
@@ -23,24 +32,26 @@ const DashboardPage = () => {
             id: 1,
             title: "Check Irrigation System",
             description: "Inspect sprinklers in Corn field",
-            date: "2024-03-20",
+            date: "2025-03-10",
             completed: false
         },
         {
             id: 2,
             title: "Fertilizer Application",
             description: "Apply nitrogen fertilizer to Wheat field",
-            date: "2024-03-22",
+            date: "2025-03-15",
             completed: true
         },
         {
             id: 3,
             title: "Harvest Planning",
             description: "Schedule equipment for tomato harvest",
-            date: "2024-03-25",
+            date: "2025-03-20",
             completed: false
         }
     ]);
+
+    const navigate = useNavigate();
 
     // Fetch layouts when the component mounts
     useEffect(() => {
@@ -149,41 +160,41 @@ const DashboardPage = () => {
 
 
     return (
-        <div className="layout-wrapper">
-        <div className="layout-page">
+        <div className="dashboard-layout-wrapper">
+            <div className="dashboard-layout-page">
                 <div className="dashboard-header">
                     <h1>Dashboard</h1>
                 </div>
                 
-                <div className="layout-content">
-            {/* Sidebar for Layout List */}
-            <div className="layout-list">
-                <h2 className="section-title">Saved Layouts</h2>
-                <div className="layout-list-content">
-                    {layouts.map(layout => (
-                        <div 
-                            key={layout._id} 
-                            className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
-                            onClick={() => setSelectedLayoutId(layout._id)}
-                        >
-                            <h3>{layout.name}</h3>
-                            <p>Width: {layout.width} | Height: {layout.height}</p>
+                <div className="dashboard-layout-content">
+                    {/* Sidebar for Layout List */}
+                    <div className="layout-list">
+                        <h2 className="section-title">Saved Layouts</h2>
+                        <div className="layout-list-content">
+                        {layouts.map(layout => (
+                            <div 
+                                key={layout._id} 
+                                className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
+                                onClick={() => setSelectedLayoutId(layout._id)}
+                            >
+                                <h3>{layout.name}</h3>
+                                <p>Width: {formatNumber(layout.width)} | Height: {formatNumber(layout.height)}</p>
+                            </div>
+                        ))}
+                            {layouts.length === 0 && (
+                                <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
+                            )}
                         </div>
-                    ))}
-                    {layouts.length === 0 && (
-                        <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
-                    )}
-                </div>
-                <button 
-                    className="add-layout"
-                    onClick={() => window.location.href = '/layout-planning'}
-                >
-                    <span>+</span> Create New Farm Layout
-                </button>
-            </div>
+                        <button 
+                            className="add-layout"
+                            onClick={() => navigate('/layout-planning')}
+                        >
+                            <span>+</span> Create New Farm Layout
+                        </button>
+                    </div>
 
-            {/* View Layout Panel */}
-            <div className="layout-view">
+                    {/* View Layout Panel */}
+                    <div className="layout-view">
                         <div className="layout-view-header">
                             <h2 className="section-title">Layout Preview</h2>
                             <div className="view-mode-toggle">
@@ -201,13 +212,13 @@ const DashboardPage = () => {
                             </div>
                         </div>
                         
-                {selectedLayout ? (
+                        {selectedLayout ? (
                             <>
                                 {showDataView ? (
                                     <div className="layout-stats">
                                         <div className="stat-card">
                                             <h3>Total Area</h3>
-                                            <div className="value">{selectedLayout.width * selectedLayout.height}m²</div>
+                                            <div className="value">{formatNumber(selectedLayout.width * selectedLayout.height)}m²</div>
                                             <div className="subtext">Total farm area</div>
                                         </div>
 
@@ -220,7 +231,7 @@ const DashboardPage = () => {
                                         <div className="stat-card">
                                             <h3>Utilized Area</h3>
                                             <div className="value">
-                                                {Math.round(selectedLayout.crop_areas.reduce((acc, crop) => acc + (crop.width * crop.height), 0))}m²
+                                                {formatNumber(selectedLayout.crop_areas.reduce((acc, crop) => acc + (crop.width * crop.height), 0))}m²
                                             </div>
                                             <div className="subtext">Total planted area</div>
                                         </div>
@@ -228,25 +239,9 @@ const DashboardPage = () => {
                                         <div className="stat-card">
                                             <h3>Estimated Total Yield</h3>
                                             <div className="value">
-                                                {(() => {
-                                                    const yieldEstimates = {
-                                                        'Corn': 7.5,      // tons per hectare
-                                                        'Wheat': 3.5,     // tons per hectare
-                                                        'Tomatoes': 35,   // tons per hectare
-                                                        'Potatoes': 25,   // tons per hectare
-                                                        'Soybeans': 2.8   // tons per hectare
-                                                    };
-                                                    
-                                                    const totalYield = selectedLayout.crop_areas.reduce((acc, crop) => {
-                                                        const areaInHectares = (crop.width * crop.height) / 10000; // convert m² to hectares
-                                                        const cropYield = yieldEstimates[crop.cropType] || 0;
-                                                        return acc + (areaInHectares * cropYield);
-                                                    }, 0);
-                                                    
-                                                    return selectedLayout.total_yield;
-                                                })()}
+                                                {formatNumber(selectedLayout.total_yield)}
                                             </div>
-                                            <div className="subtext">kg m^2</div>
+                                            <div className="subtext">kg/m²</div>
                                         </div>
 
                                         <div className="stat-card">
@@ -257,12 +252,12 @@ const DashboardPage = () => {
                                                     if (existing) {
                                                         existing.area += crop.width * crop.height;
                                                     } else {
-                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height, predictedYield:crop.predictedYield });
+                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height, predictedYield: crop.predictedYield });
                                                     }
                                                     return acc;
                                                 }, []).map(crop => (
                                                     <div key={crop.type} className="crop-tag">
-                                                        {crop.type} <span className="area">{crop.predictedYield}-kg/m2</span>
+                                                        {crop.type} <span className="area">{formatNumber(crop.predictedYield)} kg/m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -281,7 +276,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.method} className="method-tag">
-                                                        {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.method} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -300,7 +295,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.type} className="method-tag">
-                                                        {item.type} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.type} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -319,7 +314,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.method} className="method-tag">
-                                                        {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                        {item.method} <span className="area">{formatNumber(item.area)}m²</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -338,7 +333,7 @@ const DashboardPage = () => {
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.type} className="method-tag">
-                                                        {item.type} <span className="area">{item.density}</span>
+                                                        {item.type} <span className="area">{formatNumber(item.density)}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -378,6 +373,26 @@ const DashboardPage = () => {
                                         </div>
                                     </div>
                                 )}
+                                <div className="nav-buttons">
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/calendar')}
+                                    >
+                                        📅 View Calendar
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/equipment')}
+                                    >
+                                        🔧 Manage Equipment
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/crop')}
+                                    >
+                                        🌾 Manage Crops
+                                    </button>
+                                </div>
                             </>
                         ) : (
                             <p>Select a layout from the list to view its details</p>

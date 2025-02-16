@@ -1,68 +1,65 @@
-import React, { useEffect, useRef } from 'react';
-import { createCalendar } from '@schedule-x/calendar';
-import { createEventsServicePlugin } from '@schedule-x/events-service';
-import '@schedule-x/theme-default/dist/index.css';
+import React, { useState } from 'react';
+import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import '../styles/calendar.css'; // Assuming custom styles
 
-const Calendar = ({ tasks }) => {
-  const calendarRef = useRef(null);
+const localizer = momentLocalizer(moment);
 
-  useEffect(() => {
-    if (!calendarRef.current) return;
+const generateRandomTasks = () => {
+  const tasks = [
+    'Water Plants',
+    'Fertilize Garden',
+    'Prune Trees',
+    'Harvest Vegetables',
+    'Plant Seeds',
+    'Weed Garden',
+    'Check Soil pH',
+    'Mulch Garden Beds',
+    'Inspect for Pests',
+    'Compost Organic Waste',
+    'Transplant Seedlings',
+    'Harvest Herbs',
+    'Clean Garden Tools',
+    'Set Up Irrigation',
+    'Plan Crop Rotation',
+  ];
 
-    const calendarConfig = {
-      plugins: [createEventsServicePlugin()],
-      locale: 'en-US',
-      defaultView: 'week',
-      events: tasks.map(task => ({
-        id: task.id,
-        title: task.title,
-        start: task.start,
-        end: task.end,
-        description: task.description,
-        location: task.location,
-        color: getEventColor(task.type)
-      })),
-      dayBoundaries: {
-        start: '06:00',
-        end: '18:00',
-      },
-      weekOptions: {
-        nDays: 7,
-        eventWidth: 95,
-      },
-      callbacks: {
-        onEventClick: (event) => {
-          console.log('Event clicked:', event);
-          const task = tasks.find(t => t.id === event.id);
-          console.log('Full task details:', task);
-        }
-      }
-    };
+  const events = [];
+  const startDate = new Date(2025, 0, 1); // January 1, 2025
+  const endDate = new Date(2025, 2, 31); // March 31, 2025
 
-    const calendar = createCalendar(calendarConfig);
-    calendar.render(calendarRef.current);
+  for (let date = startDate; date <= endDate; date.setDate(date.getDate() + Math.floor(Math.random() * 2))) {
+    const taskCount = Math.floor(Math.random() * 3); // 1 or 2 tasks per day
+    for (let i = 0; i < taskCount; i++) {
+      const taskIndex = Math.floor(Math.random() * tasks.length);
+      const startHour = Math.floor(Math.random() * 8) + 8; // Random start hour between 8 AM and 4 PM
+      const endHour = startHour + Math.floor(Math.random() * 2) + 1; // Duration between 1 and 2 hours
 
-    return () => {
-      // Cleanup if needed
-      if (calendarRef.current) {
-        calendarRef.current.innerHTML = '';
-      }
-    };
-  }, [tasks]);
-
-  function getEventColor(type) {
-    const colors = {
-      irrigation: '#4CAF50',
-      fertilization: '#2196F3',
-      harvest: '#FFC107',
-      default: '#9E9E9E'
-    };
-    return colors[type] || colors.default;
+      events.push({
+        id: events.length + 1,
+        title: tasks[taskIndex],
+        start: new Date(date.getFullYear(), date.getMonth(), date.getDate(), startHour, 0),
+        end: new Date(date.getFullYear(), date.getMonth(), date.getDate(), endHour, 0),
+      });
+    }
   }
 
+  return events;
+};
+
+const Calendar = () => {
+  const [events, setEvents] = useState(generateRandomTasks());
+
   return (
-    <div className="calendar-wrapper">
-      <div ref={calendarRef} className="calendar-container"></div>
+    <div style={{ height: 750, width: 1000 }}>
+      <BigCalendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ margin: '20px' }}
+      />
     </div>
   );
 };

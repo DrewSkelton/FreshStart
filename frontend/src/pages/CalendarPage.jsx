@@ -35,6 +35,7 @@ import React from 'react';
 import Calendar from '../components/Calendar';
 
 const CalendarPage = () => {
+
   return (
     <div className="calendar-page">
       <h1>Farm Task Calendar</h1>

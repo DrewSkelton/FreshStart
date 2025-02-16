@@ -19,7 +19,7 @@
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.35);
     position: relative;
-    overflow: hidden;
+    overflow: auto;
     width: 468px;
     max-width: 100%;
     min-height: 480px;
@@ -85,4 +85,13 @@
 }
 .form-container{
     position: absolute;
+}
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow-y: auto;
 }
