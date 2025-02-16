@@ -5,7 +5,7 @@ import { createEventsServicePlugin } from '@schedule-x/events-service';
 import '@schedule-x/theme-default/dist/index.css';
 import '../styles/calender.css';
 
-const Calender = () => {
+const Calendar = () => {
 
   const [eventsService] = useState(() => createEventsServicePlugin());
   const [events, setEvents] = useState([]);
@@ -30,10 +30,10 @@ const Calender = () => {
   });
 
   return (
-    <div className='calender'>
+    <div className='calendar'>
       <ScheduleXCalendar calendarApp={calendar} />
     </div>
   );
 };
 
-export default Calender;
+export default Calendar;

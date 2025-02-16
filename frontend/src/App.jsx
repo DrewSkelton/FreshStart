@@ -16,8 +16,8 @@ function App() {
           <Route path="/layout-planning" element={<LayoutPage />} />
           <Route path="/equipment" element={<EquipmentPage />} />
           <Route path="/layout-dashboard" element={<DashboardPage />} />
-          <Route path="/register" element={<h1>RegisterPage</h1>} />
-          <Route path="/login" element={<h1>Login</h1>} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
         </Routes>
       </div>
