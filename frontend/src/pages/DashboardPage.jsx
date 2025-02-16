@@ -102,26 +102,28 @@ const DashboardPage = () => {
                 <div className="layout-content">
             {/* Sidebar for Layout List */}
             <div className="layout-list">
-                        <h2 className="section-title">Saved Layouts</h2>
-                {layouts.map(layout => (
-                    <div 
-                        key={layout._id} 
-                        className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
-                        onClick={() => setSelectedLayoutId(layout._id)}
-                    >
-                        <h3>{layout.name}</h3>
-                        <p>Width: {layout.width} | Height: {layout.height}</p>
-                    </div>
-                ))}
-                        {layouts.length === 0 && (
-                            <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
-                        )}
-                        <button 
-                            className="add-layout"
-                            onClick={() => window.location.href = '/layout-planning'}
+                <h2 className="section-title">Saved Layouts</h2>
+                <div className="layout-list-content">
+                    {layouts.map(layout => (
+                        <div 
+                            key={layout._id} 
+                            className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
+                            onClick={() => setSelectedLayoutId(layout._id)}
                         >
-                            <span>+</span> Create New Farm Layout
-                        </button>
+                            <h3>{layout.name}</h3>
+                            <p>Width: {layout.width} | Height: {layout.height}</p>
+                        </div>
+                    ))}
+                    {layouts.length === 0 && (
+                        <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
+                    )}
+                </div>
+                <button 
+                    className="add-layout"
+                    onClick={() => window.location.href = '/layout-planning'}
+                >
+                    <span>+</span> Create New Farm Layout
+                </button>
             </div>
 
             {/* View Layout Panel */}
