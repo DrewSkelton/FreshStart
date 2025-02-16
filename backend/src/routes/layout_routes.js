@@ -11,6 +11,11 @@ const layoutRouter = express.Router();
 import LayoutModel from "../models/Layout.js";
 import CropAreaModel from "../models/CropArea.js";
 
+// import ml funcs
+import modelFunctions from '../ml_funcs/train_model.js';
+
+const { prepareData, createModel, trainModel, loadModel, predict, main } = modelFunctions;
+
 
 /* Creates a layout object when user clicks save button 
 
@@ -133,6 +138,23 @@ layoutRouter.get("/get-layout/:id", async (req, res) => {
         res.status(200).json(layout);
     } catch (error) {
         res.status(500).json({ message: "Error fetching layout", error: error.message });
+    }
+});
+
+
+/* trains and saves a model, after loading in data 
+run via postman http://localhost:3001/layout/train-save-model to create model
+*/
+layoutRouter.post("/train-save-model/", async (req, res) => {
+    try {
+        
+        const { X_tensor, Y_tensor } = await prepareData(); // clean data
+
+        await trainModel(X_tensor, Y_tensor);  // train & save model
+
+        res.status(200).json({message:"success train model"});
+    } catch (error) {
+        res.status(500).json({ message: "error train & saving model", error: error.message });
     }
 });
 
