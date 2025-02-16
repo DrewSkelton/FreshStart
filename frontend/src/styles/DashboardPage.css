@@ -859,3 +859,66 @@ input:not(:checked) + .slider .toggle-label:first-child {
         max-width: 800px;
     }
 }
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(67, 135, 59, 0.3);
+}
+
+.nav-button {
+    flex: 1;
+    padding: 0.75rem;
+    background-color: rgba(67, 135, 59, 0.15);
+    border: 1px solid rgba(67, 135, 59, 0.4);
+    border-radius: 6px;
+    color: #43873b;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.nav-button:hover {
+    background-color: rgba(67, 135, 59, 0.25);
+    border-color: rgba(67, 135, 59, 0.6);
+    transform: translateY(-1px);
+}
+
+.nav-button:active {
+    transform: translateY(0);
+}
+
+.back-button {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(67, 135, 59, 0.15);
+    border: 1px solid rgba(67, 135, 59, 0.4);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    color: #43873b;
+    font-size: 1.5rem;
+}
+
+.back-button:hover {
+    background: rgba(67, 135, 59, 0.25);
+    border-color: rgba(67, 135, 59, 0.6);
+    transform: translateX(-2px);
+}
+
+.back-button:active {
+    transform: translateX(0);
+}

@@ -2,41 +2,71 @@
 html, body, #root {
     height: 100%;
     margin: 0;
-  }
+}
+
+.base-layout {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.base-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2a272e;
+    background-image: url('./styles/Images/farm-background-dark.png');
+    background-size: 100vw auto;
+    background-position: top center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    z-index: 0;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(42, 39, 46, .8);
+    pointer-events: none;
+}
+
+.base-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+}
   
-  .Crop-page-wrapper {
+.Crop-page-wrapper {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-  }
-:root {
-  --bg-primary: #2a272e;
-  --bg-secondary: #353238;
-  --accent-primary: #43873b;
-  --accent-secondary: #4f9c46;
-  --text-primary: #ffffff;
-  --text-secondary: #e4e4e7;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  min-height: 100vh;
+:root {
+    --bg-primary: #2a272e;
+    --bg-secondary: #353238;
+    --accent-primary: #43873b;
+    --accent-secondary: #4f9c46;
+    --text-primary: #ffffff;
+    --text-secondary: #e4e4e7;
 }
 
 .app-container {
-  min-height: 100vh;
-  position: relative;
-  background-color: var(--bg-primary);
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
 }
 
 /* Base theme variables will be added when you describe the light mode details */
 :root[data-theme="dark"] {
-  /* Current dark theme colors will be moved here when implementing light mode */
+    /* Current dark theme colors will be moved here when implementing light mode */
 }
 
 :root[data-theme="light"] {
-  /* Light theme variables will be added when you describe the light mode details */
+    /* Light theme variables will be added when you describe the light mode details */
 }
