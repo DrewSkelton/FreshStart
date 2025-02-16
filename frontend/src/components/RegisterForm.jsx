@@ -39,10 +39,7 @@ const RegisterForm = () => {
             <div className="container">
                 
                 <form onSubmit={handleSubmit}>
-                    <h1>Regster form</h1>
-                    <label>Username</label>
-                    <input type="text" placeholder="enter username" onChange={(e) => setUsername(e.target.value)} />
-
+                    <h1>New Account</h1>
                     <label>Email</label>
                     <input type="text" placeholder="enter email" onChange={(e) => setEmail(e.target.value)} />
 
@@ -50,6 +47,8 @@ const RegisterForm = () => {
                     <input type="password" placeholder="enter password" onChange={(e) => setPassword(e.target.value)} />
                 
                     <button type="create">Create Account & Register!</button>
+                    <p className= "text-sm text-center mt-4"> Already have an account? {" "}<Link to = "/login" className=''> Log In  </Link> </p>
+
                 </form>
             </div>
 

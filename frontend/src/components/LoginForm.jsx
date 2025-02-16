@@ -30,9 +30,9 @@ const LoginForm = () => {
       <div className="container">
         <form onSubmit={handleSubmit}>
 
-          <h1>Login In</h1>
+          <h1>Log In</h1>
           
-          <label >Username</label>
+          <label >Email</label>
           <input type="email" placeholder="Email Address" onChange={(e) => setEmail(e.target.value)}/>
           
           
@@ -40,10 +40,8 @@ const LoginForm = () => {
           <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
           
           
-          <button type="submit">Login In</button>
+          <button type="submit">Log In</button>
           <p className= "text-sm text-center mt-4"> Don't have an account?{" "}<Link to = "/register" className=''> Create an Account </Link> </p>
-          <p className= "text-sm text-center mt-4"> Forgot Username {" "}<Link to = "/fuser" className=''> Forgot Username </Link> </p>
-          <p className= "text-sm text-center mt-4"> Forgot Password {" "}<Link to = "/fpassowrd" className=''> Forgot Password </Link> </p>
 
 
 
