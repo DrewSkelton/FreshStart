@@ -446,13 +446,13 @@ const DashboardPage = () => {
                                                         <h4>{task.title}</h4>
                                                         <p>{task.description}</p>
                                                         <div className="task-details">
-                                                            <span className="task-date">📅 {task.date}</span>
-                                                            <span className="task-time">⏰ {task.startTime}</span>
-                                                            <span className="task-priority">🔥 {task.priority}</span>
+                                                            <span className="task-date">Date: {task.date}</span>
+                                                            <span className="task-time">Time: {task.startTime}</span>
+                                                            <span className="task-priority">Priority {task.priority}</span>
                                                         </div>
                                                         <div className="task-specifics">
-                                                            <span>💧 {task.taskDetails.waterAmount}</span>
-                                                            <span>🚿 {task.taskDetails.irrigationMethod}</span>
+                                                            <span>Water amount: {task.taskDetails.waterAmount}</span>
+                                                            <span>Irrigation: {task.taskDetails.irrigationMethod}</span>
                                                         </div>
                                                     </div>
                                                 </div>

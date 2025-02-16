@@ -870,4 +870,111 @@ input:not(:checked) + .slider .toggle-label:first-child {
 
 
 
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
 
+.water-tasks,
+.fertilizer-tasks {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.task-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.task-item:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.task-item.selected {
+    border: 2px solid #4CAF50;
+}
+
+.task-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+}
+
+.task-status.pending {
+    background: #FFC107;
+}
+
+.task-status.completed {
+    background: #4CAF50;
+}
+
+.task-status.overdue {
+    background: #F44336;
+}
+
+.task-content {
+    flex: 1;
+}
+
+.task-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+}
+
+.task-content p {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.task-details {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.task-specifics {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.generate-tasks-button {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 1rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.2s ease;
+}
+
+.generate-tasks-button:hover {
+    background: #45a049;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
