@@ -148,10 +148,65 @@
   border: 1px solid #43873b20;
   width: 100%;
   min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-height: 600px;
+  display: block;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(67, 135, 59, 0.6) rgba(42, 39, 46, 0.3);
+}
+
+.farm-area {
+  position: relative;
+  margin: auto;
+  min-width: min-content;
+  min-height: min-content;
+  display: inline-block;
+}
+
+/* Custom Scrollbar Styles */
+.farm-area-container::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+.farm-area-container::-webkit-scrollbar-track {
+  background: rgba(42, 39, 46, 0.3);
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.farm-area-container::-webkit-scrollbar-thumb {
+  background-color: rgba(67, 135, 59, 0.6);
+  border-radius: 6px;
+  border: 2px solid rgba(42, 39, 46, 0.2);
+}
+
+.farm-area-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(79, 156, 70, 0.7);
+}
+
+.farm-area-container::-webkit-scrollbar-corner {
+  background: rgba(42, 39, 46, 0.3);
+  border-radius: 6px;
+}
+
+/* Hide scrollbars for other elements */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Firefox scrollbar styles for other elements */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Override Firefox scrollbar style for farm area container */
+.farm-area-container {
+  -ms-overflow-style: auto;
 }
 
 /* Action Buttons Section */
@@ -280,6 +335,40 @@
   margin: 0.25rem 0;
   font-size: 0.9rem;
   color: #e4e4e7;
+}
+
+.crop-details p strong {
+  color: #43873b;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.crop-details .density-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #2a272e;
+  border-radius: 4px;
+  border: 1px solid #43873b40;
+}
+
+.density-info .density-value {
+  color: #43873b;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.density-info .density-label {
+  color: #e4e4e7;
+  font-size: 0.85rem;
+}
+
+.density-info .density-icon {
+  color: #43873b;
+  font-size: 1.1rem;
+  margin-right: 0.25rem;
 }
 
 .no-crops-message {

@@ -281,7 +281,11 @@ const LayoutPage = () => {
                       <p><strong>Fertilizer:</strong> {crop.fertilizerType}</p>
                       <p><strong>Method:</strong> {crop.fertilizerMethod}</p>
                       <p><strong>Size:</strong> {Math.round(crop.width * crop.height)} sq m</p>
-                      <p><strong>Density:</strong> {crop.density} plants/m²</p>
+                      <div className="density-info">
+                        <span className="density-icon">🌱</span>
+                        <span className="density-value">{crop.density}</span>
+                        <span className="density-label">plants/m²</span>
+                      </div>
                     </div>
                   </div>
                 ))

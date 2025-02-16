@@ -147,29 +147,57 @@
 }
 
 .layout-canvas-container {
+    background-color: #2a272e;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(67, 135, 59, 0.4);
+    width: 100%;
+    min-height: 400px;
+    max-height: 600px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    width: 800px;
-    height: calc(100vh - 16rem);
-    margin: 0 auto;
-    background: rgba(42, 39, 46, .0);
+    overflow: auto;
+    scrollbar-width: auto;
+    scrollbar-color: rgba(67, 135, 59, 0.6) rgba(42, 39, 46, 0.3);
+    -ms-overflow-style: auto;
+}
+
+.layout-canvas-container::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+.layout-canvas-container::-webkit-scrollbar-track {
+    background: rgba(42, 39, 46, 0.5);
     border-radius: 8px;
-    padding: 0.75rem;
-    box-sizing: border-box;
-    overflow: hidden;
+    margin: 2px;
+}
+
+.layout-canvas-container::-webkit-scrollbar-thumb {
+    background-color: rgba(67, 135, 59, 0.6);
+    border-radius: 8px;
+    border: 2px solid rgba(42, 39, 46, 0.3);
+}
+
+.layout-canvas-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(79, 156, 70, 0.7);
+}
+
+.layout-canvas-container::-webkit-scrollbar-corner {
+    background: rgba(42, 39, 46, 0.5);
+    border-radius: 8px;
 }
 
 .layout-canvas {
     position: relative;
-    width: 100%;
-    height: 100%;
-    background: rgba(42, 39, 46, 0.4);
-    border: 1px solid rgba(67, 135, 59, 0.3);
+    margin: 0 auto;
+    min-width: min-content;
+    min-height: min-content;
+    display: inline-block;
+    background-color: rgba(42, 39, 46, 0.4);
     border-radius: 4px;
-    backdrop-filter: blur(4px);
-    overflow: auto;
-    transform-origin: top left;
 }
 
 .layout-canvas > div {
@@ -177,6 +205,8 @@
     transform-origin: top left;
     min-width: fit-content;
     min-height: fit-content;
+    padding: 1px;
+    margin: 0 auto;
 }
 
 /* Custom scrollbar for layout canvas */
