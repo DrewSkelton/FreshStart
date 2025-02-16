@@ -176,10 +176,11 @@ async function predict(model, inputData) {
         }
 
         console.log("Predicted crop yield (kg per m^2):", predictedValue);
-
         // Clean up tensors to prevent memory leaks
         inputTensor.dispose();
         prediction.dispose();
+        return predictedValue;
+        
 
         return predictedValue;
     } catch (error) {
