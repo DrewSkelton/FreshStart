@@ -5,8 +5,9 @@ const BackButton = () => {
     const location = useLocation();
     const navigate = useNavigate();
     
-    // Don't show the back button on the dashboard
-    if (location.pathname === '/layout-dashboard') {
+    // Don't show the back button on the dashboard, login, or register pages
+    const excludedPaths = ['/layout-dashboard', '/login', '/register'];
+    if (excludedPaths.includes(location.pathname)) {
         return null;
     }
 
