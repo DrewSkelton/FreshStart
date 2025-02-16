@@ -1,13 +1,21 @@
 /* App.css */
 html, body, #root {
-    height: 100%;
     margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .base-layout {
-    min-height: 100vh;
+    height: 100%;
     position: relative;
-    overflow: hidden;
+}
+
+/* Enable scrolling for layout planning page */
+.base-layout .layout-page {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
 }
 
 .base-background {
@@ -26,7 +34,7 @@ html, body, #root {
 }
 
 .background-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -38,15 +46,17 @@ html, body, #root {
 .base-content {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
-}
-  
-.Crop-page-wrapper {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
+    overflow: auto;
 }
 
+.app-container {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+}
+
+/* Theme Variables */
 :root {
     --bg-primary: #2a272e;
     --bg-secondary: #353238;
@@ -54,12 +64,6 @@ html, body, #root {
     --accent-secondary: #4f9c46;
     --text-primary: #ffffff;
     --text-secondary: #e4e4e7;
-}
-
-.app-container {
-    min-height: 100vh;
-    position: relative;
-    z-index: 1;
 }
 
 /* Base theme variables will be added when you describe the light mode details */

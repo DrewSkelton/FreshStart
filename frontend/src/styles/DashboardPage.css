@@ -1,4 +1,4 @@
-.layout-wrapper {
+.dashboard-layout-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   min-width: 100vw;
 }
 
-.layout-wrapper::before {
+.dashboard-layout-wrapper::before {
   content: '';
   position: fixed;
   top: 0;
@@ -25,7 +25,7 @@
   z-index: 0;
 }
 
-.layout-page {
+.dashboard-layout-page {
     max-width: min(1600px, 95vw);
     margin: 0 auto;
     padding: min(2rem, 4vw);
@@ -40,7 +40,7 @@
     overflow: hidden;
 }
 
-.layout-content {
+.dashboard-layout-content {
     display: flex;
     gap: min(2rem, 4vw);
     flex: 1;
@@ -485,7 +485,7 @@
 
 /* Update responsive design */
 @media (max-width: 1200px) {
-    .layout-content {
+    .dashboard-layout-content {
         flex-wrap: wrap;
     }
 
