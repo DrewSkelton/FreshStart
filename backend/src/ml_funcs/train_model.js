@@ -17,6 +17,16 @@ function oneHotEncode(value, categories) {
 function labelEncode(value, categories) {
     return categories.indexOf(value); // Assign an integer based on the index in the list
 }
+function normalizeData(X) {
+    const X_min = X[0].map((_, colIndex) => Math.min(...X.map(row => row[colIndex])));
+    const X_max = X[0].map((_, colIndex) => Math.max(...X.map(row => row[colIndex])));
+    
+    return X.map(row => row.map((value, colIndex) => 
+        (X_max[colIndex] - X_min[colIndex]) !== 0 
+            ? (value - X_min[colIndex]) / (X_max[colIndex] - X_min[colIndex]) 
+            : 0 // Avoid division by zero
+    ));
+}
 
 // Function to read CSV and prepare the dataset
 async function prepareData() {
@@ -46,7 +56,7 @@ async function prepareData() {
     }));
 
     // Prepare feature matrix
-    const X = data.map(item => [
+    let X = data.map(item => [
         item.cropType,  // Encoded as an integer
         item.cropArea,
         item.soilPH,
@@ -58,9 +68,23 @@ async function prepareData() {
         item.density
     ]);
 
-    console.log("Sample processed data:", X.slice(0, 5));
+    X = normalizeData(data.map(item => [
+        item.cropType,
+        item.cropArea,
+        item.soilPH,
+        item.soilNPK,
+        item.soilOrganicMatter,
+        item.irrigationMethod,
+        item.fertilizerType,
+        item.fertilizerMethod,
+        item.density
+    ]));
+    
+
+    // console.log("Sample processed data X:", X.slice(0, 2));
 
     const Y = data.map(item => item.yield);
+    // console.log("Sample processed data Y:", Y.slice(0, 2));
 
     const X_tensor = tf.tensor2d(X);
     const Y_tensor = tf.tensor2d(Y, [Y.length, 1]);
@@ -79,11 +103,11 @@ function createModel() {
     }));
 
     model.add(tf.layers.dense({
-        units: 64,
+        units: 32,
         activation: 'relu'
     }));
 
-    model.add(tf.layers.dense({
+    model.add(tf.layers.dense({ // output nodes
         units: 1
     }));
 
@@ -112,11 +136,14 @@ async function trainModel(X_tensor, Y_tensor) {
     await model.save(`file://${modelPath}`);
     console.log("after saving");
     console.log('Model trained and saved!');
+
+    console.log("Sample processed data X:", X_tensor.slice(0, 1));
+    console.log("Sample processed data Y:", Y_tensor.slice(0, 2));
 }
 
 // Load the trained model
 async function loadModel() {
-    const model = await tf.loadLayersModel(`file://${path.dirname(csvFilePath)}/model.json`);
+    const model = await tf.loadLayersModel(`file://${path.dirname(csvFilePath)}/model/model.json`);
     console.log('Model loaded successfully!');
     return model;
 }
@@ -124,6 +151,7 @@ async function loadModel() {
 // Predict the crop yield using the trained model
 async function predict(model, inputData) {
     const prediction = model.predict(tf.tensor2d([inputData]));
+    console.log("predicted value: ")
     prediction.print();
 }
 

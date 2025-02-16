@@ -149,8 +149,13 @@ layoutRouter.post("/train-save-model/", async (req, res) => {
     try {
         
         const { X_tensor, Y_tensor } = await prepareData(); // clean data
+        // train & save model
+        await trainModel(X_tensor, Y_tensor);  
 
-        await trainModel(X_tensor, Y_tensor);  // train & save model
+        // test model 
+        const exampleInput = [1, 100, 6.5, 40, 3.5, 0, 0, 0, 200]; // Example input
+        const model = await loadModel();
+        await predict(model, exampleInput);
 
         res.status(200).json({message:"success train save model"});
     } catch (error) {
