@@ -150,9 +150,47 @@ async function loadModel() {
 
 // Predict the crop yield using the trained model
 async function predict(model, inputData) {
-    const prediction = model.predict(tf.tensor2d([inputData]));
-    console.log("predicted value: ")
-    prediction.print();
+    try {
+        // Create the input tensor
+        const inputTensor = tf.tensor2d([inputData]);
+        
+        // Make prediction
+        const prediction = model.predict(inputTensor);
+        console.log("Prediction tensor:");
+        prediction.print();
+
+        // Get the data from the tensor
+        const predictionData = await prediction.data();
+        let predictedValue = predictionData[0];
+        console.log("Raw predicted value:", predictedValue);
+
+        // Apply your transformations
+        // predictedValue = inverseLogTransformData([predictedValue])[0];
+        predictedValue = Math.max(0, predictedValue);
+        
+        if (predictedValue <= 50) {
+            predictedValue /= 19;
+        }
+        if (predictedValue >= 50) {
+            predictedValue /= 38;
+        }
+
+        console.log("Predicted crop yield (kg per m^2):", predictedValue);
+
+        // Clean up tensors to prevent memory leaks
+        inputTensor.dispose();
+        prediction.dispose();
+
+        return predictedValue;
+    } catch (error) {
+        console.error("Error in predict function:", error);
+        throw error;
+    }
+}
+
+// Helper function for inverse log transform
+function inverseLogTransformData(data) {
+    return data.map(value => Math.exp(value) - 1);
 }
 
 // Main function to execute training and prediction
