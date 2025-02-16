@@ -3,9 +3,14 @@ import FarmArea from "../components/FarmArea";
 import CropForm from "../components/CropForm";
 import axios from "axios";
 import '../styles/LayoutPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const LayoutPage = () => {
-  const [name, setName] = useState();
+  const [name, setName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const navigate = useNavigate();
+
   // calculate initial dimensions based on viewport
   const calculateInitialDimensions = () => {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
@@ -25,7 +30,7 @@ const LayoutPage = () => {
   const [soilNPK, setSoilNPK] = useState(1);
   const [soilOM, setSoilOM] = useState(1);
 
-  // update dimensions on window resize, using use effect
+  // update dimensions on window resize
   useEffect(() => {
     const handleResize = () => {
       setFarmDimensions(calculateInitialDimensions());
@@ -35,11 +40,35 @@ const LayoutPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const resetLayout = () => {
+    if (window.confirm("Are you sure you want to reset the layout? All unsaved changes will be lost.")) {
+      setName("");
+      setCropAreas([]);
+      setSelectedCrop(null);
+      setSoilPH(1);
+      setSoilNPK(1);
+      setSoilOM(1);
+      setFarmDimensions(calculateInitialDimensions());
+    }
+  };
 
-
+  const validateLayout = () => {
+    if (!name.trim()) {
+      setSaveError("Please enter a name for your layout");
+      return false;
+    }
+    if (cropAreas.length === 0) {
+      setSaveError("Please add at least one crop area");
+      return false;
+    }
+    return true;
+  };
 
   const saveLayout = async () => {
-    // Prepare the data object to send to the backend
+    setSaveError("");
+    if (!validateLayout()) return;
+
+    setIsSaving(true);
     const layoutData = {
       name: name,
       dimensions: farmDimensions,
@@ -53,7 +82,7 @@ const LayoutPage = () => {
         fertilizerMethod: crop.fertilizerMethod,
         width: crop.width,
         height: crop.height,
-        x: crop.x, // (x,y) coors
+        x: crop.x,
         y: crop.y,
         density: crop.density,
         predictedYield: crop.predictedYield
@@ -61,16 +90,16 @@ const LayoutPage = () => {
     };
 
     try {
-      // send post request to backend API to 
       const result = await axios.post("http://localhost:3001/layout/create-layout", layoutData);
-      console.log("result: " + result.data.message);
-
+      console.log("Layout saved:", result.data.message);
+      navigate("/layout-dashboard");
     } catch (error) {
-      console.error("Error saving layout:", error.response.data);
+      console.error("Error saving layout:", error);
+      setSaveError("Failed to save layout. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
-
-
 
 
   const predictYield = async () => {
@@ -116,11 +145,6 @@ const LayoutPage = () => {
     const totalYield = cropAreas.reduce((sum, crop) => sum + (crop.predictedYield || 0), 0);
     console.log("Total Yield for Layout:", totalYield);
     
-  };
-
-
-
-
   return (
     <div className="layout-wrapper">
       <div className="layout-page">
@@ -164,6 +188,18 @@ const LayoutPage = () => {
             <div className="farm-controls">
               <div className="dimension-controls">
                 <div className="input-group">
+                  <label htmlFor="name">Layout Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Enter layout name..."
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="input-group">
                   <label htmlFor="width">Farm Width (m)</label>
                   <input
                     id="width"
@@ -185,59 +221,53 @@ const LayoutPage = () => {
                   />
                 </div>
 
-                <div className="input-group">
-                  <label htmlFor="soilPH">Soil pH Level:</label>
-                  <input
-                    id="soilPH"
-                    type="number"
-                    value={soilPH || ''} // Allow empty string when null/undefined
-                    onChange={(e) => {
-                      const value = e.target.value === '' ? '' : Number(e.target.value);
-                      setSoilPH(value);
-                    }}
-                    min="0"
-                    step="0.1"
-                  />
-                </div>
+                <div className="soil-controls">
+                  <div className="input-group">
+                    <label htmlFor="soilPH">Soil pH Level</label>
+                    <input
+                      id="soilPH"
+                      type="number"
+                      value={soilPH}
+                      onChange={(e) => setSoilPH(Number(e.target.value))}
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
 
-                <div className="input-group">
-                  <label htmlFor="soilNPK">Soil NPK Level:</label>
-                  <input
-                    id="soilNPK"
-                    type="number"
-                    value={soilNPK || ''} // Allow empty string when null/undefined
-                    onChange={(e) => {
-                      const value = e.target.value === '' ? '' : Number(e.target.value);
-                      setSoilNPK(value);
-                    }}
-                    min="0"
-                    step="0.1"
-                  />
-                </div>
+                  <div className="input-group">
+                    <label htmlFor="soilNPK">Soil NPK Level</label>
+                    <input
+                      id="soilNPK"
+                      type="number"
+                      value={soilNPK}
+                      onChange={(e) => setSoilNPK(Number(e.target.value))}
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
 
-                <div className="input-group">
-                  <label htmlFor="soilOM">Soil Organic Matter %:</label>
-                  <input
-                    id="soilOM"
-                    type="number"
-                    value={soilOM || ''} // Allow empty string when null/undefined
-                    onChange={(e) => {
-                      const value = e.target.value === '' ? '' : Number(e.target.value);
-                      setSoilOM(value);
-                    }}
-                    min="0"
-                    step="0.1"
-                  />
+                  <div className="input-group">
+                    <label htmlFor="soilOM">Soil Organic Matter %</label>
+                    <input
+                      id="soilOM"
+                      type="number"
+                      value={soilOM}
+                      onChange={(e) => setSoilOM(Number(e.target.value))}
+                      min="0"
+                      step="0.1"
+                    />
+                  </div>
                 </div>
-
               </div>
 
               <div className="instructions">
                 <h3>How to use:</h3>
                 <ol>
+                  <li>Enter a name for your layout</li>
                   <li>Set your farm dimensions</li>
                   <li>Click and drag to create crop areas</li>
                   <li>Click on a crop area to edit its details</li>
+                  <li>Save your layout when finished</li>
                 </ol>
               </div>
             </div>
@@ -252,19 +282,24 @@ const LayoutPage = () => {
               />
             </div>
 
-            <div className="save-container">
-            <input 
-                type="text" 
-                placeholder="enter the name of your layout..." 
-                onChange={(e) => setName(e.target.value)} 
-                value={name} // Bind value to state variable 'name'
-            />
-              <button 
-                className="save-button"
-                onClick={saveLayout}
-              >
-                Save Farm Layout
-              </button>
+            <div className="layout-actions">
+              {saveError && <div className="error-message">{saveError}</div>}
+              <div className="action-buttons">
+                <button 
+                  className="reset-button"
+                  onClick={resetLayout}
+                  type="button"
+                >
+                  Reset Layout
+                </button>
+                <button 
+                  className="save-button"
+                  onClick={saveLayout}
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save Layout"}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -297,26 +332,13 @@ const LayoutPage = () => {
                         <span className="yield-value">{crop.predictedYield !== undefined ? crop.predictedYield : '--'}</span>
                         <span className="yield-unit"> kg/m2</span>
                       </div>
-                      {crop.cropType !== "Unknown" && (
-                        <div className="yield-factors">
-                          <span className="factor">
-                            <span className="dot irrigation"></span>
-                            Irrigation efficiency
-                          </span>
-                          <span className="factor">
-                            <span className="dot fertilizer"></span>
-                            Fertilizer impact
-                          </span>
-                          <span className="factor">
-                            <span className="dot method"></span>
-                            Method efficiency
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
-                </div>
-                
+                ))
+              ) : (
+                <div className="no-crops-message">
+                  No crop areas added yet. Click and drag on the farm area to create one.
+                </div>         
               ))}
               <button onClick={predictYield} >Predict Yield for crop areas</button>
               {cropAreas.length === 0 && (

@@ -101,41 +101,41 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="layout-wrapper">
-        <div className="layout-page">
+        <div className="dashboard-layout-wrapper">
+            <div className="dashboard-layout-page">
                 <div className="dashboard-header">
                     <h1>Dashboard</h1>
                 </div>
                 
-                <div className="layout-content">
-            {/* Sidebar for Layout List */}
-            <div className="layout-list">
-                <h2 className="section-title">Saved Layouts</h2>
-                <div className="layout-list-content">
-                {layouts.map(layout => (
-                    <div 
-                        key={layout._id} 
-                        className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
-                        onClick={() => setSelectedLayoutId(layout._id)}
-                    >
-                        <h3>{layout.name}</h3>
-                        <p>Width: {layout.width} | Height: {layout.height}</p>
+                <div className="dashboard-layout-content">
+                    {/* Sidebar for Layout List */}
+                    <div className="layout-list">
+                        <h2 className="section-title">Saved Layouts</h2>
+                        <div className="layout-list-content">
+                        {layouts.map(layout => (
+                            <div 
+                                key={layout._id} 
+                                className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
+                                onClick={() => setSelectedLayoutId(layout._id)}
+                            >
+                                <h3>{layout.name}</h3>
+                                <p>Width: {layout.width} | Height: {layout.height}</p>
+                            </div>
+                        ))}
+                            {layouts.length === 0 && (
+                                <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
+                            )}
+                        </div>
+                        <button 
+                            className="add-layout"
+                            onClick={() => navigate('/layout-planning')}
+                        >
+                            <span>+</span> Create New Farm Layout
+                        </button>
                     </div>
-                ))}
-                    {layouts.length === 0 && (
-                        <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
-                    )}
-                </div>
-                <button 
-                    className="add-layout"
-                    onClick={() => navigate('/layout-planning')}
-                >
-                    <span>+</span> Create New Farm Layout
-                </button>
-            </div>
 
-            {/* View Layout Panel */}
-            <div className="layout-view">
+                    {/* View Layout Panel */}
+                    <div className="layout-view">
                         <div className="layout-view-header">
                             <h2 className="section-title">Layout Preview</h2>
                             <div className="view-mode-toggle">
@@ -153,7 +153,7 @@ const DashboardPage = () => {
                             </div>
                         </div>
                         
-                {selectedLayout ? (
+                        {selectedLayout ? (
                             <>
                                 {showDataView ? (
                                     <div className="layout-stats">

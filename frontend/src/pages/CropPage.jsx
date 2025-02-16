@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
 import '../styles/crop.css';
 
 const CropCard = ({ item, onEdit }) => {
@@ -11,13 +12,17 @@ const CropCard = ({ item, onEdit }) => {
           <div className="image-placeholder"></div>
         </div>
         <div className="Crop-info">
-          <h3>{item.name}</h3>
+          <h3>{item.cropType}</h3>
           <div className={`status-badge ${item.status}`}>
-            {item.status.replace('-', ' ')}
+            {item.status}
           </div>
           <div className="Crop-details">
-            <p><strong>Planting Date:</strong> {item.plantingDate}</p>
-            <p><strong>Harvest Date:</strong> {item.harvestDate}</p>
+            <p><strong>Area:</strong> {Math.round(item.width * item.height)}m²</p>
+            <p><strong>Density:</strong> {item.density} plants/m²</p>
+            <p><strong>Planting Date:</strong> {item.plantingDate || 'Not set'}</p>
+            <p><strong>Harvest Date:</strong> {item.harvestDate || 'Not set'}</p>
+            <p><strong>Irrigation:</strong> {item.irrigation}</p>
+            <p><strong>Fertilizer:</strong> {item.fertilizerType}</p>
             {item.notes && (
               <button 
                 className="notes-toggle"
@@ -42,7 +47,7 @@ const CropCard = ({ item, onEdit }) => {
         <div className="modal-overlay" onClick={() => setShowNotes(false)}>
           <div className="notes-modal" onClick={e => e.stopPropagation()}>
             <div className="notes-modal-header">
-              <h2>{item.name} - Notes</h2>
+              <h2>{item.cropType} - Notes</h2>
               <button 
                 className="close-button"
                 onClick={() => setShowNotes(false)}
@@ -62,58 +67,70 @@ const CropCard = ({ item, onEdit }) => {
 
 const CropPage = () => {
   const [editingCrop, setEditingCrop] = useState(null);
-  const [Crop, setCrop] = useState([
-    {
-      id: 1,
-      name: 'Corn',
-      status: 'unplanted',
-      plantingDate: '2025-03-15',
-      harvestDate: '2025-09-20',
-      image: '/images/corn.jpg',
-      notes: 'Planted with hybrid seeds. Requires regular watering.',
-    },
-    {
-      id: 2,
-      name: 'Wheat',
-      status: 'harvested',
-      plantingDate: '2024-10-01',
-      harvestDate: '2025-06-15',
-      image: '/images/wheat.jpg',
-      notes: 'Harvested successfully. Stored in silo 3.',
-    },
-    {
-      id: 3,
-      name: 'Soybeans',
-      status: 'growing',
-      plantingDate: '2025-04-10',
-      harvestDate: '2025-10-25',
-      image: '/images/soybeans.jpg',
-      notes: 'Growing well. No issues reported.',
-    },
-    {
-      id: 4,
-      name: 'Tomatoes',
-      status: 'unplanted',
-      plantingDate: '2025-05-05',
-      harvestDate: '2025-08-30',
-      image: '/images/tomatoes.jpg',
-      notes: 'Planted in greenhouse 2. Requires weekly fertilization.',
-    },
-  ]);
+  const [crops, setCrops] = useState([]);
+  const [layouts, setLayouts] = useState([]);
+  const [selectedLayoutId, setSelectedLayoutId] = useState(null);
+
+  // Fetch layouts when component mounts
+  useEffect(() => {
+    axios.get("http://localhost:3001/layout/get-layouts")
+      .then(response => {
+        setLayouts(response.data);
+        if (response.data.length > 0 && !selectedLayoutId) {
+          setSelectedLayoutId(response.data[0]._id);
+        }
+      })
+      .catch(error => console.error("Error fetching layouts:", error));
+  }, []);
+
+  // Fetch selected layout and update crops when selectedLayoutId changes
+  useEffect(() => {
+    if (selectedLayoutId) {
+      axios.get(`http://localhost:3001/layout/get-layout/${selectedLayoutId}`)
+        .then(response => {
+          // Transform crop areas into crop entries with default planting info
+          const cropAreas = response.data.crop_areas.map(crop => ({
+            ...crop,
+            status: 'unplanted',
+            plantingDate: null,
+            harvestDate: null,
+            notes: ''
+          }));
+          setCrops(cropAreas);
+        })
+        .catch(error => console.error("Error fetching layout:", error));
+    }
+  }, [selectedLayoutId]);
 
   const handleEditSave = (updatedCrop) => {
-    setCrop(Crop.map(item => 
+    setCrops(crops.map(item => 
       item.id === updatedCrop.id ? updatedCrop : item
     ));
     setEditingCrop(null);
+
+    // Update the layout with the new crop information
+    if (selectedLayoutId) {
+      const layout = layouts.find(l => l._id === selectedLayoutId);
+      if (layout) {
+        const updatedLayout = {
+          ...layout,
+          crop_areas: crops.map(crop => 
+            crop.id === updatedCrop.id ? updatedCrop : crop
+          )
+        };
+        
+        axios.put(`http://localhost:3001/layout/update-layout/${selectedLayoutId}`, updatedLayout)
+          .catch(error => console.error("Error updating layout:", error));
+      }
+    }
   };
 
-  // Calculate Crop statistics
+  // Calculate crop statistics
   const stats = useMemo(() => {
-    const totalItems = Crop.length;
-    const unplanted = Crop.filter(item => item.status === 'unplanted').length;
-    const growing = Crop.filter(item => item.status === 'growing').length;
-    const harvested = Crop.filter(item => item.status === 'harvested').length;
+    const totalItems = crops.length;
+    const unplanted = crops.filter(item => item.status === 'unplanted').length;
+    const growing = crops.filter(item => item.status === 'growing').length;
+    const harvested = crops.filter(item => item.status === 'harvested').length;
 
     return {
       totalItems,
@@ -121,7 +138,7 @@ const CropPage = () => {
       growing,
       harvested
     };
-  }, [Crop]);
+  }, [crops]);
 
   return (
     <div className="Crop-page-wrapper">
@@ -154,6 +171,22 @@ const CropPage = () => {
                 </div>
               </div>
             </div>
+
+            <div className="layout-selector">
+              <h2>Select Layout</h2>
+              <select 
+                value={selectedLayoutId || ''} 
+                onChange={(e) => setSelectedLayoutId(e.target.value)}
+                className="layout-select"
+              >
+                <option value="">Select a layout...</option>
+                {layouts.map(layout => (
+                  <option key={layout._id} value={layout._id}>
+                    {layout.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </aside>
 
           <main className="Crop-main">
@@ -166,21 +199,25 @@ const CropPage = () => {
                     placeholder="Search Crops..."
                     className="search-input"
                   />
-                  <button className="add-Crop-button" title="Add New Crop">
-                    +
-                  </button>
                 </div>
               </div>
             </div>
 
             <div className="Crop-grid">
-              {Crop.map(item => (
+              {crops.map(item => (
                 <CropCard
                   key={item.id}
                   item={item}
                   onEdit={setEditingCrop}
                 />
               ))}
+              {crops.length === 0 && (
+                <div className="no-crops-message">
+                  {selectedLayoutId 
+                    ? "No crops found in this layout. Add crops in the Layout Planner." 
+                    : "Select a layout to view its crops."}
+                </div>
+              )}
             </div>
           </main>
         </div>
@@ -194,7 +231,6 @@ const CropPage = () => {
                 const formData = new FormData(e.target);
                 const updatedCrop = {
                   ...editingCrop,
-                  name: formData.get('name'),
                   status: formData.get('status'),
                   plantingDate: formData.get('plantingDate'),
                   harvestDate: formData.get('harvestDate'),
@@ -203,13 +239,12 @@ const CropPage = () => {
                 handleEditSave(updatedCrop);
               }}>
                 <div className="form-group">
-                  <label htmlFor="name">Crop Name</label>
+                  <label htmlFor="cropType">Crop Type</label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    defaultValue={editingCrop.name}
-                    required
+                    id="cropType"
+                    value={editingCrop.cropType}
+                    disabled
                   />
                 </div>
 
@@ -218,7 +253,7 @@ const CropPage = () => {
                   <select
                     id="status"
                     name="status"
-                    defaultValue={editingCrop.status}
+                    defaultValue={editingCrop.status || 'unplanted'}
                     required
                   >
                     <option value="unplanted">Unplanted</option>
@@ -234,7 +269,6 @@ const CropPage = () => {
                     id="plantingDate"
                     name="plantingDate"
                     defaultValue={editingCrop.plantingDate}
-                    required
                   />
                 </div>
 
@@ -245,7 +279,6 @@ const CropPage = () => {
                     id="harvestDate"
                     name="harvestDate"
                     defaultValue={editingCrop.harvestDate}
-                    required
                   />
                 </div>
 
