@@ -10,15 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-
     "@schedule-x/calendar": "^2.19.0",
     "@schedule-x/events-service": "^2.19.0",
     "@schedule-x/react": "^2.19.0",
     "@schedule-x/theme-default": "^2.19.0",
 
     "axios": "^1.7.9",
-
     "react": "^19.0.0",
+    "react-cookie": "^7.2.2",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5"
   },
