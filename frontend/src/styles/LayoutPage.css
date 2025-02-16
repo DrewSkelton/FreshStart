@@ -1,0 +1,451 @@
+.layout-page {
+  max-width: min(1600px, 95vw);
+  margin: 0 auto;
+  padding: min(2rem, 4vw);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-color: #2a272e;
+  color: #e4e4e7;
+}
+
+/* Add a wrapper to ensure background covers everything */
+.layout-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2a272e;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.layout-header {
+  text-align: center;
+  margin-bottom: min(2rem, 4vw);
+}
+
+.layout-header h1 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.layout-header p {
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: #43873b;
+}
+
+.farm-controls {
+  display: flex;
+  gap: min(2rem, 4vw);
+  margin-bottom: min(2rem, 4vw);
+  padding: min(1.5rem, 3vw);
+  background-color: #353238;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #43873b20;
+}
+
+.dimension-controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 500;
+  color: #e4e4e7;
+}
+
+.input-group input {
+  padding: 0.5rem;
+  border: 1px solid #43873b40;
+  border-radius: 4px;
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  width: clamp(120px, 20vw, 200px);
+  transition: all 0.2s ease;
+  background-color: #2a272e;
+  color: #ffffff;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #43873b;
+  box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
+}
+
+.input-group input:hover {
+  border-color: #43873b80;
+}
+
+.instructions {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #2a272e;
+  border-radius: 6px;
+  border: 1px solid #43873b40;
+}
+
+.instructions h3 {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.instructions ol {
+  padding-left: 1.5rem;
+  color: #e4e4e7;
+}
+
+.instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.instructions li::marker {
+  color: #43873b;
+}
+
+.farm-area-container {
+  background-color: #353238;
+  padding: min(1.5rem, 3vw);
+  padding-top: 24px; /* Make room for the scrollbar */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid #43873b20;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Add custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #43873b #2a272e;
+  /* Move scrollbar to top */
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+.farm-area-container::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+.farm-area-container::-webkit-scrollbar-track {
+  background: #2a272e;
+  border-radius: 6px;
+  margin: 0 10px;
+}
+
+.farm-area-container::-webkit-scrollbar-thumb {
+  background-color: #43873b;
+  border-radius: 6px;
+  border: 2px solid #2a272e;
+  min-width: 40px;
+}
+
+.farm-area-container::-webkit-scrollbar-thumb:hover {
+  background-color: #4f9c46;
+}
+
+/* Add padding to the corners of the scrollbar */
+.farm-area-container::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.layout-content {
+  display: flex;
+  gap: min(2rem, 4vw);
+  align-items: flex-start;
+}
+
+.layout-main {
+  flex: 1;
+  min-width: 0;
+  max-width: min(1250px, 100%);
+}
+
+.crop-edit-sidebar,
+.crop-data-sidebar {
+  width: min(300px, 100%);
+  background-color: #353238;
+  border-radius: 8px;
+  padding: min(1.5rem, 3vw);
+  border: 1px solid #43873b40;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  height: fit-content;
+}
+
+.crop-edit-sidebar h2 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+}
+
+.crop-edit-placeholder {
+  text-align: center;
+  color: #e4e4e7;
+  padding: 2rem 1rem;
+}
+
+.crop-edit-placeholder p {
+  margin: 0.5rem 0 0 0;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+  color: #a1a1aa;
+}
+
+.crop-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crop-data-sidebar h2 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+}
+
+.crop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crop-data-item {
+  background-color: #2a272e;
+  border: 1px solid #43873b40;
+  border-radius: 6px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  outline: none;
+}
+
+.crop-data-item:hover {
+  border-color: #43873b80;
+  background-color: #2f2b33;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.crop-data-item:active {
+  transform: translateY(0);
+}
+
+.crop-data-item.selected {
+  border-color: #43873b;
+  background-color: #2f2b33;
+  box-shadow: 0 0 0 2px #43873b40;
+}
+
+.crop-data-item:focus-visible {
+  box-shadow: 0 0 0 2px #43873b;
+}
+
+.crop-data-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #43873b;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.crop-data-item.selected::before {
+  opacity: 1;
+}
+
+.crop-data-item h3 {
+  color: #43873b;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.crop-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.crop-details p {
+  margin: 0;
+  color: #e4e4e7;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+}
+
+.crop-details strong {
+  color: #ffffff;
+}
+
+.yield-info {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #43873b20;
+}
+
+.yield-details {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.yield-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #43873b;
+}
+
+.yield-unit {
+  color: #e4e4e7;
+  font-size: 0.8rem;
+}
+
+.yield-factors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.factor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e4e4e7;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dot.irrigation {
+  background-color: #22c55e; /* Green for good efficiency */
+}
+
+.dot.fertilizer {
+  background-color: #eab308; /* Yellow for medium impact */
+}
+
+.dot.method {
+  background-color: #ef4444; /* Red for attention needed */
+}
+
+.no-crops {
+  color: #e4e4e7;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+  background-color: #2a272e;
+  border-radius: 6px;
+  border: 1px solid #43873b40;
+}
+
+.save-container {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.save-button {
+  background-color: #43873b;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.save-button:hover {
+  background-color: #4f9c46;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.save-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Update responsive styles */
+@media (max-width: 1600px) {
+  .layout-content {
+    flex-direction: column;
+  }
+
+  .layout-main {
+    max-width: 100%;
+    order: 1;
+  }
+
+  .crop-edit-sidebar {
+    width: 100%;
+    order: 2;
+  }
+
+  .crop-data-sidebar {
+    width: 100%;
+    order: 3;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .farm-controls {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    width: 100%;
+  }
+  
+  .layout-page {
+    padding: min(1rem, 2vw);
+  }
+}
+
+/* Add minimum width constraint */
+@media (min-width: 320px) {
+  .layout-page {
+    min-width: 320px;
+  }
+}
+
+/* Ensure text remains readable */
+.crop-details p,
+.instructions li,
+.crop-edit-placeholder p {
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+}
+
+h2, h3 {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+} 
