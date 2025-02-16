@@ -2,6 +2,7 @@ import random
 import pandas as pd
 
 """
+Inputs: crop_type,crop_area,soil_ph,soil_npk,soil_organic_matter,irrigation_method,fertilizer_type,fertilizer_method,density,predicted_yield_kg_m2
 Crop Area (in m²):
 Since the total farm area is 864 x 576 = 498,624 m², crop areas should be selected within this range (reasonable range: 1 to 5000 m²).
 

@@ -152,7 +152,7 @@ layoutRouter.post("/train-save-model/", async (req, res) => {
 
         await trainModel(X_tensor, Y_tensor);  // train & save model
 
-        res.status(200).json({message:"success train model"});
+        res.status(200).json({message:"success train save model"});
     } catch (error) {
         res.status(500).json({ message: "error train & saving model", error: error.message });
     }
