@@ -6,7 +6,8 @@ const CropForm = ({ crop, setSelectedCrop, onCropUpdate, onDelete }) => {
         cropType: crop.cropType || "Unknown",
         irrigation: crop.irrigation || "drip",
         fertilizerType: crop.fertilizerType || "nitrogen",
-        fertilizerMethod: crop.fertilizerMethod || "broadcasting"
+        fertilizerMethod: crop.fertilizerMethod || "broadcasting",
+        density: crop.density || 0
     });
 
     const handleInputChange = (e) => {
@@ -75,6 +76,19 @@ const CropForm = ({ crop, setSelectedCrop, onCropUpdate, onDelete }) => {
                     <option value="phosphorus">Phosphorus-Based</option>
                     <option value="potassium">Potassium-Based</option>
                 </select>
+            </div>
+
+            <div className="crop-form-field">
+                <label htmlFor="density">Density of Crop Area (plants/m²):</label>
+                <input 
+                    id="density" 
+                    name="density" 
+                    type="number"
+                    value={formData.density || ''}
+                    onChange={handleInputChange}
+                    min="0"
+                    step="0.1"
+                />
             </div>
 
             <div className="crop-form-field">

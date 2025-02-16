@@ -11,6 +11,10 @@ const LayoutSchema = new mongoose.Schema({
     total_area: { type: Number, default: 0.0 },
     width: { type: Number, required: true },
     height: { type: Number, required: true },
+
+    soil_ph: { type: Number, required: false },
+    soil_npk: { type: Number, required: false },
+    soil_om: { type: Number, required: false },
    
 });
 
