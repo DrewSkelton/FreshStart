@@ -1,0 +1,59 @@
+.layout-page {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Layout List */
+.layout-list {
+    width: 25%;
+    background: #f8f8f8;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+/* Layout Card Style */
+.layout-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.layout-card:hover {
+    background: #ddd;
+}
+
+.layout-card.selected {
+    background: #3498db;
+    color: white;
+}
+
+/* Main Layout View */
+.layout-view {
+    flex-grow: 1;
+    padding: 20px;
+    position: relative;
+    overflow: auto;
+}
+
+/* Layout Canvas */
+.layout-canvas {
+    position: relative;
+    background: #eee;
+    border: 2px solid #333;
+    margin-top: 20px;
+}
+
+/* Crop Area */
+.crop-area {
+    background-color: rgba(0, 128, 0, 0.3);
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid green;
+    font-size: 0.8em;
+}
