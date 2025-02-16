@@ -5,12 +5,13 @@
   right: 0;
   bottom: 0;
   background-image: url('../styles/Images/farm-background-dark.png');
-  background-size: 100vw auto;
+  background-size: cover;
   background-position: top center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  overflow: hidden;
+  overflow: auto;
   min-width: 100vw;
+  padding: 0 4rem;
 }
 
 .dashboard-layout-wrapper::before {
@@ -26,9 +27,9 @@
 }
 
 .dashboard-layout-page {
-    max-width: min(1600px, 95vw);
+    min-width: max-content;
     margin: 0 auto;
-    padding: min(2rem, 4vw);
+    padding: 2rem 4rem;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -37,21 +38,24 @@
     position: relative;
     z-index: 1;
     background: none;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .dashboard-layout-content {
     display: flex;
-    gap: min(2rem, 4vw);
+    gap: 3rem;
     flex: 1;
     height: calc(100vh - 8rem);
-    overflow: hidden;
+    overflow: visible;
+    min-width: max-content;
+    padding-bottom: 2rem;
 }
 
 /* Layout List Sidebar */
 .layout-list {
+    min-width: 300px;
     width: 300px;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     background: rgba(53, 50, 56);
     border-radius: 8px;
     padding: 1.5rem;
@@ -131,10 +135,11 @@
 
 /* Layout View Panel */
 .layout-view {
-    flex: 2;
+    flex: 3;
+    min-width: 1000px;
     background: rgba(53, 50, 56);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 2rem;
     border: 1px solid rgba(67, 135, 59, 0.3);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     height: 700px;
@@ -369,8 +374,9 @@
 
 /* Todo Section */
 .todo-section {
-    width: 300px;
-    flex-shrink: 0;
+    min-width: 400px;
+    width: 450px;
+    flex: 0 0 auto;
     background: rgba(53, 50, 56);
     border-radius: 8px;
     padding: 1.5rem;
@@ -516,26 +522,35 @@
 /* Update responsive design */
 @media (max-width: 1200px) {
     .dashboard-layout-content {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 0 2rem;
     }
 
     .layout-view {
-        order: -1;
-        flex: 1 1 100%;
+        order: 0;
+        flex: 0 0 1000px;
     }
 
-    .layout-list, .todo-section {
-        flex: 1 1 300px;
+    .layout-list {
+        flex: 0 0 300px;
     }
 
-    .layout-stats {
-        grid-template-columns: repeat(2, 1fr);
+    .todo-section {
+        flex: 0 0 450px;
+    }
+
+    .tasks-container {
+        grid-template-columns: 1fr;
+        max-width: none;
     }
 }
 
 @media (max-width: 768px) {
-    .layout-list, .todo-section {
+    .layout-list, 
+    .todo-section {
         width: 100%;
+        min-width: 100%;
     }
 
     .layout-stats {
@@ -544,18 +559,20 @@
 }
 
 .dashboard-header {
-    text-align: center;
-    margin-bottom: 2rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
     color: #ffffff;
+    padding-left: 0.5rem;
 }
 
 .dashboard-header h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2rem, 4vw, 2.5rem);
     margin: 0;
     background: linear-gradient(135deg, #43873b 0%, #4f9c46 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
 }
 
 .section-title {
@@ -950,4 +967,153 @@ input:not(:checked) + .slider .toggle-label:first-child {
 
 .back-button:active {
     transform: translateX(0);
+}
+
+/* Tasks List Section */
+.tasks-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+    min-width: 0;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.water-tasks,
+.fertilizer-tasks {
+  background-color: #353238;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(67, 135, 59, 0.2);
+}
+
+.water-tasks h3,
+.fertilizer-tasks h3 {
+  color: #43873b;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(67, 135, 59, 0.2);
+}
+
+.task-item {
+  background-color: #2a272e;
+  border: 1px solid rgba(67, 135, 59, 0.2);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  border-color: #43873b;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.task-item.selected {
+  border-color: #43873b;
+  box-shadow: 0 0 0 2px rgba(67, 135, 59, 0.2);
+}
+
+.task-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.task-status.pending { background-color: #fbbf24; }
+.task-status.completed { background-color: #34d399; }
+.task-status.in-progress { background-color: #60a5fa; }
+
+.task-content h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+  padding-right: 1.5rem;
+}
+
+.task-content p {
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.task-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.task-details span {
+  color: #e4e4e7;
+  background-color: #353238;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(67, 135, 59, 0.2);
+}
+
+.task-specifics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.task-specifics span {
+  color: #43873b;
+  font-size: 0.85rem;
+  background-color: rgba(67, 135, 59, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid rgba(67, 135, 59, 0.2);
+}
+
+.generate-tasks-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #43873b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.generate-tasks-button:hover {
+  background-color: #4f9c46;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.generate-tasks-button:active {
+  transform: translateY(0);
+}
+
+.generate-tasks-button span {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1200px) {
+  .tasks-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.yield-value,
+.yield-unit {
+  color: #ffffff;
 }

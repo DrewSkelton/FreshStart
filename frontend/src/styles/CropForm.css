@@ -63,6 +63,34 @@
   background-size: 1rem;
 }
 
+.crop-form-field input[type="number"] {
+  width: 100%;
+  padding: 0.4rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #43873b40;
+  border-radius: 4px;
+  background-color: #2a272e;
+  color: #ffffff;
+  font-size: 0.9rem;
+  appearance: textfield;
+}
+
+.crop-form-field input[type="number"]::-webkit-outer-spin-button,
+.crop-form-field input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.crop-form-field input[type="number"]:hover {
+  border-color: #43873b80;
+}
+
+.crop-form-field input[type="number"]:focus {
+  outline: none;
+  border-color: #43873b;
+  box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
+}
+
 .crop-form-field select:hover {
   border-color: #43873b80;
 }
