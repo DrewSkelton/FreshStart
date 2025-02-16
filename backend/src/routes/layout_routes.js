@@ -300,7 +300,7 @@ layoutRouter.get("/generate-schedule-tasks/:id", async (req, res) => {
     try {
         // Initialize OpenAI
         const openai = new OpenAI({
-            apiKey: "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"
+            apiKey: "no api key for you haha"
         });
  
         // Step 1: Fetch the layout object by its ID

@@ -435,10 +435,6 @@ const DashboardPage = () => {
                         >
                             <span>+</span> Add New Task
                         </button>
-
-                        
-
-                        <button  className="add-todo" onClick={generateTasks} > Generate Schedule Tasks </button>
                     </div>
 
 
