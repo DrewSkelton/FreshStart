@@ -1,19 +1,31 @@
 /* Base Layout Structure */
+html, body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
 .layout-page {
   width: 100%;
   min-height: 100%;
-  padding: 2rem;
+  padding: 2rem 2rem 6rem 2rem;
   background-color: transparent;
   position: relative;
+  overflow-y: auto;
 }
 
 .layout-wrapper {
   max-width: 1600px;
   margin: 0 auto;
-  padding-bottom: 2rem;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: 100%;
+  position: relative;
 }
 
 /* Header Section */
@@ -38,6 +50,9 @@
   display: flex;
   gap: 2rem;
   align-items: flex-start;
+  position: relative;
+  min-height: calc(100vh - 200px);
+  padding-bottom: 4rem;
 }
 
 /* Main Area */
@@ -163,50 +178,32 @@
   display: inline-block;
 }
 
-/* Custom Scrollbar Styles */
-.farm-area-container::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+/* Global Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
   display: block;
 }
 
-.farm-area-container::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: rgba(42, 39, 46, 0.3);
-  border-radius: 6px;
-  margin: 2px;
+  border-radius: 4px;
 }
 
-.farm-area-container::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: rgba(67, 135, 59, 0.6);
-  border-radius: 6px;
+  border-radius: 4px;
   border: 2px solid rgba(42, 39, 46, 0.2);
 }
 
-.farm-area-container::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background-color: rgba(79, 156, 70, 0.7);
 }
 
-.farm-area-container::-webkit-scrollbar-corner {
-  background: rgba(42, 39, 46, 0.3);
-  border-radius: 6px;
-}
-
-/* Hide scrollbars for other elements */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
-}
-
-/* Firefox scrollbar styles for other elements */
+/* Firefox Scrollbar Styles */
 * {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-/* Override Firefox scrollbar style for farm area container */
-.farm-area-container {
-  -ms-overflow-style: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(67, 135, 59, 0.6) rgba(42, 39, 46, 0.3);
 }
 
 /* Action Buttons Section */
@@ -300,8 +297,12 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 600px;
   overflow-y: auto;
+  height: auto;
+  max-height: calc(100vh - 250px);
+  padding-right: 8px;
+  padding-bottom: 4rem;
+  margin-bottom: 2rem;
 }
 
 .crop-data-item {
@@ -381,19 +382,42 @@
   border: 1px dashed #43873b40;
 }
 
+.crop-data-sidebar {
+  height: auto;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding-bottom: 4rem;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .layout-content {
     flex-direction: column;
+    padding-bottom: 4rem;
+    min-height: auto;
   }
 
   .crop-edit-sidebar,
   .crop-data-sidebar {
     width: 100%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .crop-list {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
   }
 
   .layout-main {
     order: -1;
+    margin-bottom: 2rem;
   }
 
   .farm-controls {
@@ -407,7 +431,7 @@
 
 @media (max-width: 768px) {
   .layout-page {
-    padding: 1rem;
+    padding: 1rem 1rem 4rem 1rem;
   }
 
   .layout-wrapper {
@@ -438,17 +462,4 @@
 
 h2, h3 {
   font-size: clamp(1.1rem, 2vw, 1.3rem);
-}
-
-/* Custom Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
-}
-
-/* Firefox scrollbar styles */
-* {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 } 
