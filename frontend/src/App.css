@@ -9,3 +9,34 @@ html, body, #root {
     display: flex;
     flex-direction: column;
   }
+:root {
+  --bg-primary: #2a272e;
+  --bg-secondary: #353238;
+  --accent-primary: #43873b;
+  --accent-secondary: #4f9c46;
+  --text-primary: #ffffff;
+  --text-secondary: #e4e4e7;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.app-container {
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--bg-primary);
+}
+
+/* Base theme variables will be added when you describe the light mode details */
+:root[data-theme="dark"] {
+  /* Current dark theme colors will be moved here when implementing light mode */
+}
+
+:root[data-theme="light"] {
+  /* Light theme variables will be added when you describe the light mode details */
+}
