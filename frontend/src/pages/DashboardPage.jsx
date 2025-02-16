@@ -59,8 +59,13 @@ const DashboardPage = () => {
     // Fetch the selected layout when selectedLayoutId changes
     useEffect(() => {
         if (selectedLayoutId) {
+            
             axios.get(`http://localhost:3001/layout/get-layout/${selectedLayoutId}`)
-                .then(response => setSelectedLayout(response.data))
+                .then(response => {
+                    setSelectedLayout(response.data);
+                    console.log("Full layout data:", response.data);
+                    console.log("Crop areas:", response.data.crop_areas);
+                })
                 .catch(error => console.error("Error fetching layout:", error));
         }
     }, [selectedLayoutId]);
@@ -190,10 +195,10 @@ const DashboardPage = () => {
                                                         return acc + (areaInHectares * cropYield);
                                                     }, 0);
                                                     
-                                                    return Math.round(totalYield * 10) / 10;
+                                                    return selectedLayout.total_yield;
                                                 })()}
                                             </div>
-                                            <div className="subtext">Tons per year</div>
+                                            <div className="subtext">kg m^2</div>
                                         </div>
 
                                         <div className="stat-card">
@@ -204,12 +209,12 @@ const DashboardPage = () => {
                                                     if (existing) {
                                                         existing.area += crop.width * crop.height;
                                                     } else {
-                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height });
+                                                        acc.push({ type: crop.cropType, area: crop.width * crop.height, predictedYield:crop.predictedYield });
                                                     }
                                                     return acc;
                                                 }, []).map(crop => (
                                                     <div key={crop.type} className="crop-tag">
-                                                        {crop.type} <span className="area">{Math.round(crop.area)}m²</span>
+                                                        {crop.type} <span className="area">{crop.predictedYield}-kg/m2</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -280,12 +285,12 @@ const DashboardPage = () => {
                                                     if (existing) {
                                                         existing.count += 1;
                                                     } else {
-                                                        acc.push({ type: crop.cropType, count: 1 });
+                                                        acc.push({ type: crop.cropType, count: 1, density: crop.density });
                                                     }
                                                     return acc;
                                                 }, []).map(item => (
                                                     <div key={item.type} className="method-tag">
-                                                        {item.type} <span className="area">--</span>
+                                                        {item.type} <span className="area">{item.density}</span>
                                                     </div>
                                                 ))}
                                             </div>
