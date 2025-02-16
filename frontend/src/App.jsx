@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import CalendarPage from './pages/CalendarPage';
 import LayoutPage from "./pages/LayoutPage";
 import EquipmentPage from "./pages/EquipmentPage";
 import './App.css';
@@ -15,6 +16,8 @@ function App() {
           <Route path="/layout-dashboard" element={<DashboardPage />} />
           <Route path="/register" element={<h1>Register</h1>} />
           <Route path="/login" element={<h1>Login</h1>} />
+          <Route path="/calendar" element={<CalendarPage />} />
+
         </Routes>
       </div>
     </Router>
