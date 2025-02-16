@@ -1,0 +1,137 @@
+:root {
+  --sx-color-primary: #1c1b1f; /* Main color */
+  --sx-color-on-primary: #1c1b1f;
+  --sx-color-primary-container: #1c1b1f;
+  --sx-color-on-primary-container: #1c1b1f;
+  --sx-color-secondary: #43873b; /* Accent color */
+  --sx-color-on-secondary: #fff;
+  --sx-color-secondary-container: #e8def8;
+  --sx-color-on-secondary-container: #1e192b;
+  --sx-color-tertiary: #7d5260;
+  --sx-color-on-tertiary: #fff;
+  --sx-color-tertiary-container: #ffd8e4;
+  --sx-color-on-tertiary-container: #370b1e;
+  --sx-color-surface: #fef7ff;
+  --sx-color-surface-dim: #ded8e1;
+  --sx-color-surface-bright: #fef7ff;
+  --sx-color-on-surface: #1c1b1f;
+  --sx-color-surface-container: #f3edf7;
+  --sx-color-surface-container-low: #f7f2fa;
+  --sx-color-surface-container-high: #ece6f0;
+  --sx-color-background: #fff; 
+  --sx-color-on-background: #1c1b1f;
+  --sx-color-outline: #79747e;
+  --sx-color-outline-variant: #c4c7c5;
+  --sx-color-shadow: #000;
+  --sx-color-surface-tint: #1c1b1f; /* Main color */
+  --sx-color-neutral: var(--sx-color-outline);
+  --sx-color-neutral-variant: var(--sx-color-outline-variant);
+
+  /* internally defined colors, not belonging to the material design spec */
+  --sx-internal-color-gray-ripple-background: #e0e0e0;
+  --sx-internal-color-light-gray: #fafafa;
+  --sx-internal-color-text: #000;
+}
+
+@font-face {
+  font-family: 'pollie';
+  src: url('/Users/drew/repos/FarmStart/frontend/fonts/windfarm-and-pollie/Pollie.woff2') format('woff2'),  /* Preferred format */
+        url('/Users/drew/repos/FarmStart/frontend/fonts/windfarm-and-pollie/Pollie.woff') format('woff'); /* Fallback format */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'windfarm';
+  src: url('/Users/drew/repos/FarmStart/frontend/fonts/windfarm-and-pollie/WindfarmRegular.woff2') format('woff2'),  /* Preferred format */
+        url('/Users/drew/repos/FarmStart/frontend/fonts/windfarm-and-pollie/WindfarmRegular.woff') format('woff'); /* Fallback format */
+  font-weight: normal;
+  font-style: normal;
+}
+
+.sx-react-calendar-wrapper {
+  width: 1200px;
+  max-width: 100vw;
+  height: 800px;
+  max-height: 90vh;
+}
+
+
+* {
+  font-family: 'Pollie', sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2a272e;
+}
+
+a, button {
+  background-color: #43873b; /* Accent color */
+  border: none;
+  margin: 10px;
+  color: white;
+  padding: 6px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.sx__calendar-header {
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.sx__calendar-header {
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.sx__view-container {
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+}
+.sx__week-header-content {
+  background-color: var(--sx-color-secondary);
+  color: var(--sx-color-secondary);
+  color: white
+}
+
+.sx__week-grid__day-name {
+  color: white;
+}
+.sx__week-grid__date-number {
+  color: white;
+}
+.sx__date-picker-wrapper, .months-view, .sx__today-button{
+  background-color: var(--sx-color-primary);
+  color: var(--sx-color-on-primary);
+}
+
+.calendar {
+  background-color: #1c1b1f;
+  color: var(--sx-color-on-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.calendar .event {
+  background-color: var(--sx-color-secondary);
+  color: var(--sx-color-on-secondary);
+}
+
+
