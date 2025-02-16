@@ -30,21 +30,21 @@ const DashboardPage = () => {
             id: 1,
             title: "Check Irrigation System",
             description: "Inspect sprinklers in Corn field",
-            date: "2024-03-20",
+            date: "2025-03-10",
             completed: false
         },
         {
             id: 2,
             title: "Fertilizer Application",
             description: "Apply nitrogen fertilizer to Wheat field",
-            date: "2024-03-22",
+            date: "2025-03-15",
             completed: true
         },
         {
             id: 3,
             title: "Harvest Planning",
             description: "Schedule equipment for tomato harvest",
-            date: "2024-03-25",
+            date: "2025-03-20",
             completed: false
         }
     ]);

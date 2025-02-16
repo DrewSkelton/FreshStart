@@ -329,7 +329,7 @@ const LayoutPage = () => {
                       <div className="yield-info">
                         <p><strong>Expected Yield:</strong></p>
                         <div className="yield-details">
-                          <span className="yield-value">{crop.predictedYield !== undefined ? crop.predictedYield : '--'}</span>
+                          <span className="yield-value">{crop.predictedYield !== undefined ? Number(crop.predictedYield).toFixed(4) : '--'}</span>
                           <span className="yield-unit"> kg/m2</span>
                         </div>
                       </div>
@@ -341,10 +341,12 @@ const LayoutPage = () => {
                   No crop areas added yet. Click and drag on the farm area to create one.
                 </div>         
               )}
-              <button onClick={predictYield} >Predict Yield for crop areas</button>
-              {cropAreas.length === 0 && (
-                <p className="no-crops">No crop areas defined yet. Click and drag on the farm area to create one.</p>
-              )}
+              <button 
+                className="predict-button"
+                onClick={predictYield}
+              >
+                Predict Yield for Crop Areas
+              </button>
             </div>
           </div>
         </div>
