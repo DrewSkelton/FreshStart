@@ -341,10 +341,8 @@ const LayoutPage = () => {
                   No crop areas added yet. Click and drag on the farm area to create one.
                 </div>         
               )}
-              <button onClick={predictYield} >Predict Yield for crop areas</button>
-              {cropAreas.length === 0 && (
-                <p className="no-crops">No crop areas defined yet. Click and drag on the farm area to create one.</p>
-              )}
+              <button onClick={predictYield} >Predict yield for crop areas</button>
+
             </div>
           </div>
         </div>
