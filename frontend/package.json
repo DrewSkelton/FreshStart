@@ -14,10 +14,8 @@
     "@schedule-x/events-service": "^2.19.0",
     "@schedule-x/react": "^2.19.0",
     "@schedule-x/theme-default": "^2.19.0",
-
-    "ics": "^3.8.1",
     "axios": "^1.6.7",
-
+    "ics": "^3.8.1",
     "react": "^18.2.0",
     "react-cookie": "^7.0.2",
     "react-dom": "^18.2.0",
@@ -31,6 +29,7 @@
     "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "rollup": "^2.79.1",
     "vite": "^5.1.6"
   }
 }

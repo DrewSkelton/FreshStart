@@ -1,119 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react';
-import { createViewDay, createViewMonthAgenda, createViewMonthGrid, createViewWeek } from '@schedule-x/calendar';
+import React, { useEffect, useRef } from 'react';
+import { createCalendar } from '@schedule-x/calendar';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import '@schedule-x/theme-default/dist/index.css';
-import '../styles/calendar.css';
-import { createEvent } from 'ics';
 
-const Calendar = () => {
-  const [eventsService] = useState(() => createEventsServicePlugin());
-  const [events, setEvents] = useState([]);
+const Calendar = ({ tasks }) => {
+  const calendarRef = useRef(null);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('/api/events');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    if (!calendarRef.current) return;
+
+    const calendarConfig = {
+      plugins: [createEventsServicePlugin()],
+      locale: 'en-US',
+      defaultView: 'week',
+      events: tasks.map(task => ({
+        id: task.id,
+        title: task.title,
+        start: task.start,
+        end: task.end,
+        description: task.description,
+        location: task.location,
+        color: getEventColor(task.type)
+      })),
+      dayBoundaries: {
+        start: '06:00',
+        end: '18:00',
+      },
+      weekOptions: {
+        nDays: 7,
+        eventWidth: 95,
+      },
+      callbacks: {
+        onEventClick: (event) => {
+          console.log('Event clicked:', event);
+          const task = tasks.find(t => t.id === event.id);
+          console.log('Full task details:', task);
         }
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new TypeError('Response is not JSON');
-        }
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
       }
     };
 
-    fetchEvents();
-  }, []);
+    const calendar = createCalendar(calendarConfig);
+    calendar.render(calendarRef.current);
 
-  const calendar = useCalendarApp({
-    views: [createViewMonthGrid(), createViewMonthAgenda(), createViewWeek(), createViewDay()],
-    events: events,
-    //isDark: true,
-
-    monthGridOptions: {
-      nEventsPerDay: 8,
-    },
-
-    callbacks: {
-      onDateClick: (date) => {
-        console.log('onDateClick', date);
-      },
-      onEventClick: (calendarEvent) => {
-        console.log('onEventClick', calendarEvent);
-      },
-      onClickAgendaDate: (date) => {
-        console.log('onClickAgendaDate', date);
-      },
-      onRender: ($app) => {
-        console.log('onRender', $app);
-      },
-    },
-  });
-
-  const exportToICS = (event) => {
-    const { title, start, duration, description, location } = event;
-
-    const eventData = {
-      title,
-      description,
-      location,
-      start, // [YYYY, MM, DD, HH, MM]
-      duration, // { hours: X, minutes: Y }
-    };
-
-    createEvent(eventData, (error, value) => {
-      if (error) {
-        console.error(error);
-        return;
+    return () => {
+      // Cleanup if needed
+      if (calendarRef.current) {
+        calendarRef.current.innerHTML = '';
       }
+    };
+  }, [tasks]);
 
-      // Create a downloadable .ics file
-      const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'event.ics';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  };
-
-  const getGoogleCalendarUrl = (event) => {
-    const { title, start, duration, description, location } = event;
-    const startDate = new Date(Date.UTC(...start)).toISOString().replace(/-|:|\.\d+/g, '');
-    const endDate = new Date(Date.UTC(...start));
-    endDate.setHours(endDate.getHours() + duration.hours);
-    endDate.setMinutes(endDate.getMinutes() + duration.minutes);
-    const endDateString = endDate.toISOString().replace(/-|:|\.\d+/g, '');
-
-    return `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDateString}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(location)}&sf=true&output=xml`;
-  };
-
-  const exampleEvent = {
-    title: 'FarmStart Meeting',
-    start: [2025, 2, 20, 10, 0], // [Year, Month, Day, Hour, Minute]
-    duration: { hours: 1, minutes: 30 },
-    description: 'Weekly progress meeting for FarmStart project',
-    location: 'Zoom Link: https://zoom.us/j/123456789',
-  };
+  function getEventColor(type) {
+    const colors = {
+      irrigation: '#4CAF50',
+      fertilization: '#2196F3',
+      harvest: '#FFC107',
+      default: '#9E9E9E'
+    };
+    return colors[type] || colors.default;
+  }
 
   return (
-    <div className='calendar'>
-      <ScheduleXCalendar calendarApp={calendar} />
-      <div className='export-buttons'>
-        <button onClick={() => exportToICS(exampleEvent)}>Export to Calendar</button>
-        <a href={getGoogleCalendarUrl(exampleEvent)} target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
-      </div>
+    <div className="calendar-wrapper">
+      <div ref={calendarRef} className="calendar-container"></div>
     </div>
   );
 };
-
 
 export default Calendar;

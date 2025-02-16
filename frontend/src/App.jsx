@@ -12,7 +12,7 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <Routes>
+        <Routes>f
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/layout-planning" element={<LayoutPage />} />
           <Route path="/equipment" element={<EquipmentPage />} />

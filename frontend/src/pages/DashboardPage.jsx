@@ -10,6 +10,8 @@ const DashboardPage = () => {
     const [showNewTaskModal, setShowNewTaskModal] = useState(false);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
     const [showDataView, setShowDataView] = useState(false);
+    const [waterTasks, setWaterTasks] = useState([]);
+    const [fertTasks, setFertTasks] = useState([]);
     const [newTask, setNewTask] = useState({
         title: "",
         description: "",
@@ -67,6 +69,32 @@ const DashboardPage = () => {
         }
     }, [selectedLayoutId]);
 
+    useEffect(() => {
+        const fetchTasks = async () => {
+            if (selectedLayoutId) {  // Ensure selectedLayoutId exists
+                try {
+                    const response = await axios.get(`http://localhost:3001/layout/get-layout-tasks/${selectedLayoutId}`);
+    
+                    // Ensure tasks exist before setting state
+                    if (response.data.waterTasks) {
+                        setWaterTasks(response.data.waterTasks);
+                    }
+                    if (response.data.fertTasks) {
+                        setFertTasks(response.data.fertTasks);
+                    }
+    
+                    console.log("Water Tasks:", response.data.waterTasks);
+                    console.log("Fertilizer Tasks:", response.data.fertTasks);
+    
+                } catch (error) {
+                    console.error("Error fetching tasks:", error);
+                }
+            }
+        };
+    
+        fetchTasks();
+    }, [selectedLayoutId]); 
+
     const toggleTodo = (id) => {
         setTodos(todos.map(todo =>
             todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -96,6 +124,29 @@ const DashboardPage = () => {
         });
         setShowNewTaskModal(false);
     };
+
+
+
+    const generateTasks = async () => {
+        // setLoading(true);
+        // setError(null); // Reset any previous errors
+    
+        try {
+          // Send a GET request to the backend to generate tasks
+          const response = await axios.get(`http://localhost:3001/layout/generate-schedule-tasks/${selectedLayoutId}`);
+          
+          // Handle success (you can show the tasks or any other response)
+          console.log('Tasks generated successfully:', response.data);
+          // You can trigger state updates here if needed
+        } catch (err) {
+          console.error('Error generating tasks:', err);
+        //   setError('Failed to generate tasks. Please try again.');
+        } finally {
+        //   setLoading(false); // Stop loading state
+        }
+      };
+
+
 
     return (
         <div className="layout-wrapper">
@@ -369,7 +420,84 @@ const DashboardPage = () => {
                         >
                             <span>+</span> Add New Task
                         </button>
+
+                        
+
+                        <button  className="add-todo" onClick={generateTasks} > Generate Schedule Tasks </button>
                     </div>
+
+
+
+                    <div className="todo-section">
+                            <h2 className="section-title">Tasks List</h2>
+                            
+                                <>
+                                    <div className="tasks-container">
+                                        <div className="water-tasks">
+                                            <h3>Watering Tasks</h3>
+                                            {waterTasks.map(task => (
+                                                <div 
+                                                    key={task._id}
+                                                    className={`task-item ${selectedTaskId === task._id ? 'selected' : ''}`}
+                                                    onClick={() => setSelectedTaskId(task._id === selectedTaskId ? null : task._id)}
+                                                >
+                                                    <div className={`task-status ${task.status}`} />
+                                                    <div className="task-content">
+                                                        <h4>{task.title}</h4>
+                                                        <p>{task.description}</p>
+                                                        <div className="task-details">
+                                                            <span className="task-date">📅 {task.date}</span>
+                                                            <span className="task-time">⏰ {task.startTime}</span>
+                                                            <span className="task-priority">🔥 {task.priority}</span>
+                                                        </div>
+                                                        <div className="task-specifics">
+                                                            <span>💧 {task.taskDetails.waterAmount}</span>
+                                                            <span>🚿 {task.taskDetails.irrigationMethod}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="fertilizer-tasks">
+                                            <h3>Fertilizer Tasks</h3>
+                                            {fertTasks.map(task => (
+                                                <div 
+                                                    key={task._id}
+                                                    className={`task-item ${selectedTaskId === task._id ? 'selected' : ''}`}
+                                                    onClick={() => setSelectedTaskId(task._id === selectedTaskId ? null : task._id)}
+                                                >
+                                                    <div className={`task-status ${task.status}`} />
+                                                    <div className="task-content">
+                                                        <h4>{task.title}</h4>
+                                                        <p>{task.description}</p>
+                                                        <div className="task-details">
+                                                            <span className="task-date">📅 {task.date}</span>
+                                                            <span className="task-time">⏰ {task.startTime}</span>
+                                                            <span className="task-priority">🔥 {task.priority}</span>
+                                                        </div>
+                                                        <div className="task-specifics">
+                                                            <span>🌱 {task.taskDetails.fertilizerType}</span>
+                                                            <span>📏 {task.taskDetails.fertilizerAmount}</span>
+                                                            <span>🔄 {task.taskDetails.applicationMethod}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        className="generate-tasks-button"
+                                        onClick={generateTasks}
+                                    >
+                                        <span>🔄</span> Generate Schedule Tasks
+                                    </button>
+                                </>
+                            
+                        </div>
+
+
 
                     {/* New Task Modal */}
                     {showNewTaskModal && (
