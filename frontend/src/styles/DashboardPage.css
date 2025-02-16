@@ -118,10 +118,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(42, 39, 46, 0.4);
+    background: rgba(42, 39, 46, .0);
     border-radius: 8px;
-    padding: 1.5rem;
-    min-height: 300px;
+    padding: 0.75rem 0.25rem;
+    min-height: 200px;
 }
 
 .layout-canvas {
@@ -205,18 +205,11 @@
     padding: 0.5rem;
     font-size: 0.8rem;
     color: #ffffff;
-    transition: all 0.2s ease;
     backdrop-filter: blur(2px);
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 80px;
-}
-
-.crop-area:hover {
-    background: rgba(67, 135, 59, 0.25);
-    border-color: rgba(67, 135, 59, 0.6) !important;
-    z-index: 1;
 }
 
 .crop-area .crop-type {
@@ -290,6 +283,20 @@
     gap: 0.75rem;
     transition: all 0.2s ease;
     backdrop-filter: blur(4px);
+    cursor: pointer;
+    position: relative;
+    padding-right: 3rem;
+}
+
+.todo-item:hover {
+    background: rgba(42, 39, 46, 0.5);
+    border-color: rgba(67, 135, 59, 0.3);
+}
+
+.todo-item.selected {
+    background: rgba(42, 39, 46, 0.6);
+    border-color: rgba(67, 135, 59, 0.4);
+    box-shadow: 0 0 0 2px rgba(67, 135, 59, 0.2);
 }
 
 .todo-checkbox {
@@ -363,6 +370,36 @@
 
 .add-todo span {
     font-size: 1.2rem;
+}
+
+.delete-task-button {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.todo-item:hover .delete-task-button {
+    opacity: 0.8;
+    pointer-events: auto;
+}
+
+.delete-task-button:hover {
+    background-color: rgba(220, 38, 38, 0.1);
+    opacity: 1 !important;
 }
 
 /* Update responsive design */
@@ -472,4 +509,164 @@
     font-size: 0.9rem;
     opacity: 0.8;
     font-style: italic;
+}
+
+.add-layout {
+    background: rgba(67, 135, 59, 0.15);
+    border: 1px dashed rgba(67, 135, 59, 0.4);
+    border-radius: 6px;
+    padding: 1rem;
+    color: #43873b;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.add-layout:hover {
+    background: rgba(67, 135, 59, 0.25);
+    border-color: rgba(67, 135, 59, 0.6);
+}
+
+.add-layout span {
+    font-size: 1.2rem;
+}
+
+.task-modal {
+    background-color: #353238;
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    border: 1px solid rgba(67, 135, 59, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+    color: #ffffff;
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: #e4e4e7;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid rgba(67, 135, 59, 0.3);
+    border-radius: 4px;
+    background-color: #2a272e;
+    color: #ffffff;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #43873b;
+    box-shadow: 0 0 0 3px rgba(67, 135, 59, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-button {
+    background-color: #43873b;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #4f9c46;
+}
+
+.cancel-button {
+    background-color: #dc2626;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #ef4444;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: #e4e4e7;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background-color: rgba(67, 135, 59, 0.2);
+    color: #ffffff;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }

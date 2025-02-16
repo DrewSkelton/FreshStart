@@ -6,6 +6,14 @@ const DashboardPage = () => {
     const [layouts, setLayouts] = useState([]);
     const [selectedLayoutId, setSelectedLayoutId] = useState(null);
     const [selectedLayout, setSelectedLayout] = useState(null);
+    const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
+    const [newTask, setNewTask] = useState({
+        title: "",
+        description: "",
+        date: new Date().toISOString().split('T')[0],
+        completed: false
+    });
     const [todos, setTodos] = useState([
         {
             id: 1,
@@ -33,9 +41,15 @@ const DashboardPage = () => {
     // Fetch layouts when the component mounts
     useEffect(() => {
         axios.get("http://localhost:3001/layout/get-layouts")
-            .then(response => setLayouts(response.data))
+            .then(response => {
+                setLayouts(response.data);
+                // If there are layouts and no layout is currently selected, select the first one
+                if (response.data.length > 0 && !selectedLayoutId) {
+                    setSelectedLayoutId(response.data[0]._id);
+                }
+            })
             .catch(error => console.error("Error fetching layouts:", error));
-    }, []);
+    }, [selectedLayoutId]);
 
     // Fetch the selected layout when selectedLayoutId changes
     useEffect(() => {
@@ -50,6 +64,30 @@ const DashboardPage = () => {
         setTodos(todos.map(todo =>
             todo.id === id ? { ...todo, completed: !todo.completed } : todo
         ));
+    };
+
+    const deleteTask = (id, e) => {
+        e.stopPropagation(); // Prevent task selection when clicking delete
+        setTodos(todos.filter(todo => todo.id !== id));
+        setSelectedTaskId(null);
+    };
+
+    const handleAddTask = () => {
+        if (newTask.title.trim() === "") return;
+        
+        const task = {
+            id: Date.now(),
+            ...newTask
+        };
+        
+        setTodos([...todos, task]);
+        setNewTask({
+            title: "",
+            description: "",
+            date: new Date().toISOString().split('T')[0],
+            completed: false
+        });
+        setShowNewTaskModal(false);
     };
 
     return (
@@ -76,6 +114,12 @@ const DashboardPage = () => {
                         {layouts.length === 0 && (
                             <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
                         )}
+                        <button 
+                            className="add-layout"
+                            onClick={() => window.location.href = '/layout-planning'}
+                        >
+                            <span>+</span> Create New Farm Layout
+                        </button>
                     </div>
 
                     {/* View Layout Panel */}
@@ -229,22 +273,101 @@ const DashboardPage = () => {
                     <div className="todo-section">
                         <h2 className="section-title">To-Do List</h2>
                         {todos.map(todo => (
-                            <div key={todo.id} className="todo-item">
+                            <div 
+                                key={todo.id} 
+                                className={`todo-item ${selectedTaskId === todo.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedTaskId(todo.id === selectedTaskId ? null : todo.id)}
+                            >
                                 <div 
                                     className={`todo-checkbox ${todo.completed ? 'checked' : ''}`}
-                                    onClick={() => toggleTodo(todo.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        toggleTodo(todo.id);
+                                    }}
                                 />
                                 <div className="todo-content">
                                     <h4>{todo.title}</h4>
                                     <p>{todo.description}</p>
                                     <div className="todo-date">{todo.date}</div>
                                 </div>
+                                <button 
+                                    className="delete-task-button"
+                                    onClick={(e) => deleteTask(todo.id, e)}
+                                    title="Delete task"
+                                >
+                                    🗑️
+                                </button>
                             </div>
                         ))}
-                        <button className="add-todo">
+                        <button 
+                            className="add-todo"
+                            onClick={() => setShowNewTaskModal(true)}
+                        >
                             <span>+</span> Add New Task
                         </button>
                     </div>
+
+                    {/* New Task Modal */}
+                    {showNewTaskModal && (
+                        <div className="modal-overlay" onClick={() => setShowNewTaskModal(false)}>
+                            <div className="task-modal" onClick={e => e.stopPropagation()}>
+                                <div className="modal-header">
+                                    <h2>Add New Task</h2>
+                                    <button 
+                                        className="close-button"
+                                        onClick={() => setShowNewTaskModal(false)}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                                <div className="modal-content">
+                                    <div className="form-group">
+                                        <label htmlFor="title">Task Title</label>
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            value={newTask.title}
+                                            onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                                            placeholder="Enter task title..."
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="description">Description</label>
+                                        <textarea
+                                            id="description"
+                                            value={newTask.description}
+                                            onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                                            placeholder="Enter task description..."
+                                            rows="4"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="date">Due Date</label>
+                                        <input
+                                            type="date"
+                                            id="date"
+                                            value={newTask.date}
+                                            onChange={(e) => setNewTask({...newTask, date: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="modal-actions">
+                                    <button 
+                                        className="save-button"
+                                        onClick={handleAddTask}
+                                    >
+                                        Add Task
+                                    </button>
+                                    <button
+                                        className="cancel-button"
+                                        onClick={() => setShowNewTaskModal(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
