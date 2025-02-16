@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CalendarPage from './pages/CalendarPage';
+import CropPage from './pages/CropPage';
 import LayoutPage from "./pages/LayoutPage";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register" element={<h1>RegisterPage</h1>} />
           <Route path="/login" element={<h1>Login</h1>} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/crop" element={<CropPage />} />
         </Routes>
       </div>
     </Router>
