@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import '../styles/Crop.css';
+import '../styles/crop.css';
 
 const CropCard = ({ item, onEdit }) => {
   const [showNotes, setShowNotes] = useState(false);
