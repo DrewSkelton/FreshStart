@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/DashboardPage.css"; 
 import { getCropColor } from "../components/CropArea";
+import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
     const [layouts, setLayouts] = useState([]);
@@ -39,6 +40,8 @@ const DashboardPage = () => {
             completed: false
         }
     ]);
+
+    const navigate = useNavigate();
 
     // Fetch layouts when the component mounts
     useEffect(() => {
@@ -109,23 +112,23 @@ const DashboardPage = () => {
             <div className="layout-list">
                 <h2 className="section-title">Saved Layouts</h2>
                 <div className="layout-list-content">
-                    {layouts.map(layout => (
-                        <div 
-                            key={layout._id} 
-                            className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
-                            onClick={() => setSelectedLayoutId(layout._id)}
-                        >
-                            <h3>{layout.name}</h3>
-                            <p>Width: {layout.width} | Height: {layout.height}</p>
-                        </div>
-                    ))}
+                {layouts.map(layout => (
+                    <div 
+                        key={layout._id} 
+                        className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
+                        onClick={() => setSelectedLayoutId(layout._id)}
+                    >
+                        <h3>{layout.name}</h3>
+                        <p>Width: {layout.width} | Height: {layout.height}</p>
+                    </div>
+                ))}
                     {layouts.length === 0 && (
                         <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
                     )}
                 </div>
                 <button 
                     className="add-layout"
-                    onClick={() => window.location.href = '/layout-planning'}
+                    onClick={() => navigate('/layout-planning')}
                 >
                     <span>+</span> Create New Farm Layout
                 </button>
@@ -327,6 +330,26 @@ const DashboardPage = () => {
                                         </div>
                                     </div>
                                 )}
+                                <div className="nav-buttons">
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/calendar')}
+                                    >
+                                        📅 View Calendar
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/equipment')}
+                                    >
+                                        🔧 Manage Equipment
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/crop')}
+                                    >
+                                        🌾 Manage Crops
+                                    </button>
+                                </div>
                             </>
                         ) : (
                             <p>Select a layout from the list to view its details</p>
