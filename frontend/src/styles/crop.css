@@ -162,6 +162,7 @@
 }
 
 .add-Crop-button {
+  font-family: sans-serif;
   background-color: #43873b;
   color: white;
   border: none;
@@ -242,19 +243,19 @@
   margin-bottom: 0.5rem;
 }
 
-.status-badge.available {
-  background-color: #22c55e20;
-  color: #22c55e;
+.status-badge.unplanted {
+  background-color: #ef4444; /* Red for unplanted */
+  color: white;
 }
 
-.status-badge.in-use {
-  background-color: #eab30820;
-  color: #eab308;
+.status-badge.growing {
+  background-color: #f59e0b; /* Yellow for growing */
+  color: white;
 }
 
-.status-badge.maintenance {
-  background-color: #ef444420;
-  color: #ef4444;
+.status-badge.harvested {
+  background-color: #22c55e; /* Green for harvested */
+  color: white;
 }
 
 .Crop-details {
@@ -294,15 +295,6 @@
 
 .action-button.edit:hover {
   background-color: #43873b40;
-}
-
-.action-button.schedule {
-  background-color: #43873b;
-  color: white;
-}
-
-.action-button.schedule:hover {
-  background-color: #4f9c46;
 }
 
 /* Responsive adjustments */

@@ -66,7 +66,7 @@ const CropPage = () => {
     {
       id: 1,
       name: 'Corn',
-      status: 'planted',
+      status: 'unplanted',
       plantingDate: '2025-03-15',
       harvestDate: '2025-09-20',
       image: '/images/corn.jpg',
@@ -93,7 +93,7 @@ const CropPage = () => {
     {
       id: 4,
       name: 'Tomatoes',
-      status: 'planted',
+      status: 'unplanted',
       plantingDate: '2025-05-05',
       harvestDate: '2025-08-30',
       image: '/images/tomatoes.jpg',
@@ -111,13 +111,13 @@ const CropPage = () => {
   // Calculate Crop statistics
   const stats = useMemo(() => {
     const totalItems = Crop.length;
-    const planted = Crop.filter(item => item.status === 'planted').length;
+    const unplanted = Crop.filter(item => item.status === 'unplanted').length;
     const growing = Crop.filter(item => item.status === 'growing').length;
     const harvested = Crop.filter(item => item.status === 'harvested').length;
 
     return {
       totalItems,
-      planted,
+      unplanted,
       growing,
       harvested
     };
@@ -141,8 +141,8 @@ const CropPage = () => {
                   <span className="stat-label">Total Crops</span>
                 </div>
                 <div className="stat-item">
-                  <span className="stat-value">{stats.planted}</span>
-                  <span className="stat-label">Planted</span>
+                  <span className="stat-value">{stats.unplanted}</span>
+                  <span className="stat-label">Unplanted</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value">{stats.growing}</span>
@@ -221,7 +221,7 @@ const CropPage = () => {
                     defaultValue={editingCrop.status}
                     required
                   >
-                    <option value="planted">Planted</option>
+                    <option value="unplanted">Unplanted</option>
                     <option value="growing">Growing</option>
                     <option value="harvested">Harvested</option>
                   </select>
