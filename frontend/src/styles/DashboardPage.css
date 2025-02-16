@@ -889,7 +889,6 @@ input:not(:checked) + .slider .toggle-label:first-child {
         max-width: 800px;
     }
 }
-
 .nav-buttons {
     display: flex;
     gap: 1rem;

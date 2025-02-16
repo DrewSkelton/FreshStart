@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import CropAreaModel from "./CropArea.js";
 import EquipmentItemModel from "./EquipmentItem.js";
+import WaterTaskModel from "./WaterTask.js";
+import FertTaskModel from "./FertTask.js";
+
 
 
 const LayoutSchema = new mongoose.Schema({
@@ -17,6 +20,10 @@ const LayoutSchema = new mongoose.Schema({
     soil_om: { type: Number, required: false },
 
     total_yield: { type: Number, default: 0.0, required: false },
+
+    water_tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "WaterTask", required:false}],
+    fert_tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "FertTask", required:false}]
+
    
 });
 

@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import axios from "axios";
+
 // create app
 const app = express()
 app.use(express.json())
@@ -10,6 +12,10 @@ const layoutRouter = express.Router();
 // import models
 import LayoutModel from "../models/Layout.js";
 import CropAreaModel from "../models/CropArea.js";
+import WaterTaskModel from "../models/WaterTask.js";
+import FertTaskModel from "../models/FertTask.js";
+
+
 
 // import ml funcs
 import modelFunctions from '../ml_funcs/train_model.js';
@@ -160,6 +166,32 @@ layoutRouter.get("/get-layout/:id", async (req, res) => {
 });
 
 
+layoutRouter.get("/get-layout-tasks/:id", async (req, res) => {
+    try {
+        const layout = await LayoutModel.findById(req.params.id)
+            .populate("water_tasks")  // Populate water tasks
+            .populate("fert_tasks");  // Populate fertilizer tasks
+
+        if (!layout) {
+            return res.status(404).json({ message: "Layout not found" });
+        }
+
+        // Extract only the tasks
+        const waterTasks = layout.water_tasks;
+        const fertTasks = layout.fert_tasks;
+
+        res.status(200).json({
+            waterTasks,
+            fertTasks
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching layout", error: error.message });
+    }
+});
+
+
+
 /* trains and saves a model, after loading in data 
 run via postman http://localhost:3001/layout/train-save-model to create model
 */
@@ -263,5 +295,198 @@ layoutRouter.post("/get-prediction/", async (req, res) => {
     
 });
 
+import { OpenAI } from 'openai'; 
+layoutRouter.get("/generate-schedule-tasks/:id", async (req, res) => {
+    try {
+        // Initialize OpenAI
+        const openai = new OpenAI({
+            apiKey: "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"
+        });
+ 
+        // Step 1: Fetch the layout object by its ID
+        const layout = await LayoutModel.findById(req.params.id).populate('crop_areas');
+        if (!layout) {
+            return res.status(404).send({ message: "Layout not found" });
+        }
+ 
+        // Step 2: Compile crop area information
+        const cropData = layout.crop_areas.map((cropArea) => ({
+            cropName: cropArea.cropType,
+            area: cropArea.width * cropArea.height,
+            soilType: layout.soil_ph ? 
+                `pH: ${layout.soil_ph}, NPK: ${layout.soil_npk}, OM: ${layout.soil_om}` : 
+                "Soil information not available",
+            waterRequirements: cropArea.irrigation,
+            fertilizationNeeds: cropArea.fertilizerType,
+            growthStage: cropArea.predictedYield ? 
+                `Predicted yield: ${cropArea.predictedYield} units` : 
+                "Growth stage info not available"
+        }));
+ 
+        // Step 3: Call OpenAI API
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4-0125-preview",  // Updated to use GPT-4 Turbo
+            messages: [{
+                role: "system",
+                content: "You are a precise farming task scheduler. You must generate tasks using exact schema matching and strict enum values. Never deviate from the specified formats and values."
+            }, {
+                role: "user",
+                content: generateOpenAiPrompt({ layoutId: layout._id, crops: cropData })
+            }],
+            temperature: 0.1,  // Lower temperature for more consistent outputs
+            max_tokens: 2000,  // Increased token limit for more detailed responses
+            response_format: { type: "json_object" }  // Ensure JSON response
+        });
+        
+        if (!completion.choices || completion.choices.length === 0) {
+            throw new Error("No response from OpenAI");
+        }
+ 
+        // Parse the response with better error handling
+        const tasksString = completion.choices[0].message.content.trim();
+        let parsedTasks;
+        
+        try {
+            // Remove any markdown code block indicators if present
+            const cleanJson = tasksString.replace(/```json\n?|\n?```/g, '').trim();
+            parsedTasks = JSON.parse(cleanJson);
+            
+            console.log("Cleaned JSON string:", cleanJson);
+            console.log("Parsed tasks:", parsedTasks);
+        } catch (error) {
+            console.error("Original response:", tasksString);
+            console.error("Parse error:", error);
+            throw new Error(`Failed to parse OpenAI response: ${error.message}`);
+        }
+ 
+        // Validate the parsed tasks structure
+        if (!parsedTasks || typeof parsedTasks !== 'object') {
+            throw new Error('Invalid response structure: not an object');
+        }
+ 
+        if (!Array.isArray(parsedTasks.waterTasks) || !Array.isArray(parsedTasks.fertTasks)) {
+            throw new Error('Invalid response structure: waterTasks or fertTasks is not an array');
+        }
+ 
+        // Validate each task has required fields
+        const validateTask = (task, type) => {
+            const requiredFields = ['title', 'date', 'startTime'];
+            const missingFields = requiredFields.filter(field => !task[field]);
+            
+            if (missingFields.length > 0) {
+                throw new Error(`${type} task missing required fields: ${missingFields.join(', ')}`);
+            }
+        };
+ 
+        parsedTasks.waterTasks.forEach(task => validateTask(task, 'Water'));
+        parsedTasks.fertTasks.forEach(task => validateTask(task, 'Fertilization'));
+ 
+        // Create task models
+        const waterTasks = await WaterTaskModel.create(parsedTasks.waterTasks);
+        const fertTasks = await FertTaskModel.create(parsedTasks.fertTasks);
+ 
+        // Update layout with new tasks
+        layout.water_tasks.push(...waterTasks.map(task => task._id));
+        layout.fert_tasks.push(...fertTasks.map(task => task._id));
+        await layout.save();
+ 
+        res.status(200).json({
+            message: "Tasks generated successfully",
+            waterTasks,
+            fertTasks
+        });
+ 
+    } catch (error) {
+        console.error("Task generation error:", error);
+        
+        if (error.response?.status === 401) {
+            return res.status(500).json({ 
+                message: "OpenAI API authentication failed. Please check API key configuration." 
+            });
+        }
+        
+        if (error.response?.status === 404) {
+            return res.status(500).json({ 
+                message: "OpenAI API endpoint not found. Please check API configuration." 
+            });
+        }
+ 
+        if (error.message.includes('Failed to parse')) {
+            return res.status(500).json({
+                message: "Failed to process the generated tasks",
+                error: error.message,
+                details: "The AI response format was invalid"
+            });
+        }
+ 
+        res.status(500).json({
+            message: "Failed to generate tasks",
+            error: error.message
+        });
+    }
+ });
+
+
+ const generateOpenAiPrompt = (structuredData) => {
+    return `
+    Given the following layout information, generate watering and fertilization tasks for each crop area using EXACTLY the schema structure specified below.
+    The layout ID is ${structuredData.layoutId}, and the crops information is as follows:
+    ${JSON.stringify(structuredData.crops, null, 2)}
+  
+    You must return ONLY a JSON object with the following structure, NO additional text, markdown or explanations:
+    {
+      "waterTasks": [
+        {
+          "title": "string",
+          "description": "string",
+          "date": "YYYY-MM-DD",
+          "startTime": "HH:MM", 
+          "endTime": "HH:MM",
+          "recurrence": "MUST BE EXACTLY ONE OF THESE STRINGS: 'daily', 'weekly', 'monthly', 'none'",
+          "status": "MUST BE EXACTLY ONE OF THESE STRINGS: 'pending', 'completed', 'overdue'",
+          "priority": "MUST BE EXACTLY ONE OF THESE STRINGS: 'low', 'medium', 'high'",
+          "relatedCrop": "string",
+          "taskDetails": {
+            "waterAmount": "string",
+            "irrigationMethod": "string",
+            "fertilizerType": "string",
+            "fertilizerAmount": "string",
+            "frequency": "string"
+          }
+        }
+      ],
+      "fertTasks": [
+        {
+          "title": "string",
+          "description": "string",
+          "date": "YYYY-MM-DD",
+          "startTime": "HH:MM",
+          "endTime": "HH:MM",
+          "recurrence": "MUST BE EXACTLY ONE OF THESE STRINGS: 'daily', 'weekly', 'monthly', 'none'",
+          "status": "MUST BE EXACTLY ONE OF THESE STRINGS: 'pending', 'completed', 'overdue'",
+          "priority": "MUST BE EXACTLY ONE OF THESE STRINGS: 'low', 'medium', 'high'",
+          "relatedCrop": "string",
+          "taskDetails": {
+            "fertilizerType": "string",
+            "fertilizerAmount": "string",
+            "applicationMethod": "MUST BE EXACTLY ONE OF THESE STRINGS: 'Spraying', 'Soil Application', 'Foliar', 'Drip'",
+            "frequency": "MUST BE EXACTLY ONE OF THESE STRINGS: 'daily', 'weekly', 'monthly', 'as needed'"
+          }
+        }
+      ]
+    }
+ 
+    IMPORTANT RULES:
+    1. ALL fields must be included with non-empty values
+    2. Use today's date (${new Date().toISOString().split('T')[0]}) as the starting date
+    3. The structure must match EXACTLY - do not add or remove any fields
+    4. Each task's fields must use the exact names shown above
+    5. For enum fields, you MUST use EXACTLY one of the provided string values - no variations or alternatives
+    6. Times should be in 24-hour format (HH:MM)
+    7. ALL fields in taskDetails must be filled with appropriate values
+    8. DO NOT use any variations of the enum values - they must match EXACTLY as shown
+    9. Use the EXACT string values shown in single quotes for enum fields
+    `;
+};
 
 export default layoutRouter; 
