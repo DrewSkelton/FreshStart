@@ -16,6 +16,10 @@ app.use(cors());
 app.use("/layout", layoutRouter);
 
 
+// TBD: create route that imports ml funcs loads data, train model, gets predictions
+
+
+
 
 // connection string with  db-user=admin, db-password
 mongoose.connect("mongodb+srv://admin:53tx0WLftZcxANGe@farmstartcluster.qnr2s.mongodb.net/?retryWrites=true&w=majority&appName=farmStartCluster")

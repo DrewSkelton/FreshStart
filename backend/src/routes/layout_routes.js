@@ -11,6 +11,11 @@ const layoutRouter = express.Router();
 import LayoutModel from "../models/Layout.js";
 import CropAreaModel from "../models/CropArea.js";
 
+// import ml funcs
+import modelFunctions from '../ml_funcs/train_model.js';
+
+const { prepareData, createModel, trainModel, loadModel, predict, main } = modelFunctions;
+
 
 /* Creates a layout object when user clicks save button 
 
@@ -136,4 +141,49 @@ layoutRouter.get("/get-layout/:id", async (req, res) => {
     }
 });
 
+
+/* trains and saves a model, after loading in data 
+run via postman http://localhost:3001/layout/train-save-model to create model
+*/
+layoutRouter.post("/train-save-model/", async (req, res) => {
+    try {
+        
+        const { X_tensor, Y_tensor } = await prepareData(); // clean data
+        // train & save model
+        await trainModel(X_tensor, Y_tensor);  
+
+        // test model 
+        const exampleInput = [1, 100, 6.5, 40, 3.5, 0, 0, 0, 200]; // Example input
+        const model = await loadModel();
+        await predict(model, exampleInput);
+
+        res.status(200).json({message:"success train save model"});
+    } catch (error) {
+        res.status(500).json({ message: "error train & saving model", error: error.message });
+    }
+});
+
+/* generates predictionby laoding in saved model, given a row of input data
+run via postman: http://localhost:3001/layout/get-prediction
+Data:
+
+*/
+layoutRouter.get("/get-prediction/", async (req, res) => {
+    try {
+        
+        const { X_tensor, Y_tensor } = await prepareData(); // clean data
+        // train & save model
+        // await trainModel(X_tensor, Y_tensor);  
+
+        // test model 
+        const exampleInput = [1, 100, 6.5, 40, 3.5, 0, 0, 0, 200]; // Example input
+        const model = await loadModel();
+        const predicted_crop_yield = await predict(model, exampleInput);
+        console.log("Predicted crop yield (kg per m^2) route:", predicted_crop_yield);
+
+        res.status(200).json({message:"success train save model"});
+    } catch (error) {
+        res.status(500).json({ message: "error model predictions", error: error.message });
+    }
+});
 export default layoutRouter; 

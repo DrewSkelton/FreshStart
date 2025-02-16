@@ -29,7 +29,7 @@
     max-width: min(1600px, 95vw);
     margin: 0 auto;
     padding: min(2rem, 4vw);
-    min-height: 100vh;
+    min-height: 170vh;
     display: flex;
     flex-direction: column;
     gap: min(2rem, 4vw);
@@ -43,6 +43,7 @@
     display: flex;
     gap: min(2rem, 4vw);
     flex: 1;
+    height: calc(100vh - 12rem); /* Account for header and padding */
 }
 
 /* Layout List Sidebar */
@@ -54,13 +55,41 @@
     padding: 1.5rem;
     border: 1px solid rgba(67, 135, 59, 0.3);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: fit-content;
-    max-height: calc(100vh - 4rem);
-    overflow-y: auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     backdrop-filter: blur(8px);
+    box-sizing: border-box;
+}
+
+.layout-list-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-right: 0.5rem;
+    min-height: 0; /* Allow container to shrink */
+}
+
+.layout-list-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.layout-list-content::-webkit-scrollbar-track {
+    background: rgba(42, 39, 46, 0.3);
+    border-radius: 4px;
+}
+
+.layout-list-content::-webkit-scrollbar-thumb {
+    background-color: rgba(67, 135, 59, 0.6);
+    border-radius: 4px;
+    border: 2px solid rgba(42, 39, 46, 0.2);
+}
+
+.layout-list-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(79, 156, 70, 0.7);
 }
 
 .layout-card {
@@ -106,37 +135,86 @@
     padding: 1.5rem;
     border: 1px solid rgba(67, 135, 59, 0.3);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    min-height: calc(100vh - 4rem);
+    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     backdrop-filter: blur(8px);
+    box-sizing: border-box;
 }
 
 .layout-canvas-container {
-    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow: hidden;
+    width: 100%;
+    height: 600px;
+    margin: 0 auto;
     background: rgba(42, 39, 46, .0);
     border-radius: 8px;
-    padding: 0.75rem 0.25rem;
-    min-height: 200px;
+    padding: 0.75rem;
+    box-sizing: border-box;
 }
 
 .layout-canvas {
     position: relative;
+    width: 100%;
+    height: 100%;
     background: rgba(42, 39, 46, 0.4);
     border: 1px solid rgba(67, 135, 59, 0.3);
     border-radius: 4px;
     backdrop-filter: blur(4px);
+    overflow: auto;
+    transform-origin: top left;
+}
+
+.layout-canvas > div {
+    position: relative;
+    transform-origin: top left;
+    min-width: fit-content;
+    min-height: fit-content;
+}
+
+/* Custom scrollbar for layout canvas */
+.layout-canvas::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.layout-canvas::-webkit-scrollbar-track {
+    background: rgba(42, 39, 46, 0.3);
+    border-radius: 4px;
+}
+
+.layout-canvas::-webkit-scrollbar-thumb {
+    background-color: rgba(67, 135, 59, 0.6);
+    border-radius: 4px;
+    border: 2px solid rgba(42, 39, 46, 0.2);
+}
+
+.layout-canvas::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(79, 156, 70, 0.7);
+}
+
+.layout-canvas::-webkit-scrollbar-corner {
+    background: rgba(42, 39, 46, 0.3);
 }
 
 .layout-stats {
+    width: 100%;
+    height: 600px;
+    margin: 0 auto;
+    background: rgba(42, 39, 46, 0.4);
+    border: 1px solid rgba(67, 135, 59, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    box-sizing: border-box;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    padding-top: 1rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .stat-card {
@@ -148,6 +226,7 @@
     flex-direction: column;
     gap: 0.5rem;
     backdrop-filter: blur(4px);
+    min-width: 0; /* Prevent overflow in grid */
 }
 
 .stat-card h3 {
@@ -416,11 +495,19 @@
     .layout-list, .todo-section {
         flex: 1 1 300px;
     }
+
+    .layout-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
     .layout-list, .todo-section {
         width: 100%;
+    }
+
+    .layout-stats {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -669,4 +756,103 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+.layout-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.view-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.toggle-label.active {
+    color: #43873b;
+    font-weight: 500;
+}
+
+/* Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 40px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #2a272e;
+    transition: 0.4s;
+    border-radius: 8px;
+    border: 1px solid rgba(67, 135, 59, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 32px;
+    width: 96px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #43873b;
+    transition: 0.4s;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.slider .toggle-label {
+    color: #e4e4e7;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 2;
+    transition: color 0.3s ease;
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+}
+
+input:checked + .slider:before {
+    transform: translateX(96px);
+}
+
+input:checked + .slider .toggle-label:last-child {
+    color: #ffffff;
+}
+
+input:not(:checked) + .slider .toggle-label:first-child {
+    color: #ffffff;
+}
+
+/* Add responsive handling for both containers */
+@media (max-width: 1100px) {
+    .layout-canvas-container, .layout-stats {
+        width: 100%;
+        max-width: 1000px;
+    }
 }
