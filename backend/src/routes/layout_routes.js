@@ -21,10 +21,10 @@ const { prepareData, createModel, trainModel, loadModel, predict, main, prepareD
 
 Example data recived with request:
 create-layout-request-data: {
-  "name": "Farm 5",
+  "name": "G2",
   "dimensions": {
-    "width": 713,
-    "height": 476
+    "width": 728,
+    "height": 485
   },
   "soil_ph": 1,
   "soil_npk": 1,
@@ -35,22 +35,36 @@ create-layout-request-data: {
       "irrigation": "drip",
       "fertilizerType": "nitrogen",
       "fertilizerMethod": "broadcasting",
-      "width": 201,
-      "height": 109,
-      "x": 199.7734375,
-      "y": 57.515625,
-      "density": "12"
+      "width": 282,
+      "height": 156,
+      "x": 218,
+      "y": 96.35415649414062,
+      "density": "0.3",
+      "predictedYield": 2.5806121826171875
     },
     {
-      "cropType": "Wheat",
+      "cropType": "Tomatoes",
+      "irrigation": "sprinkler",
+      "fertilizerType": "nitrogen",
+      "fertilizerMethod": "broadcasting",
+      "width": 591,
+      "height": 184,
+      "x": 69,
+      "y": 265.6875,
+      "density": "0.9",
+      "predictedYield": 2.4535138607025146
+    },
+    {
+      "cropType": "Potatoes",
       "irrigation": "drip",
       "fertilizerType": "nitrogen",
       "fertilizerMethod": "broadcasting",
-      "width": 135,
-      "height": 279,
-      "x": 491.7734375,
-      "y": 75.515625,
-      "density": "14"
+      "width": 48,
+      "height": 63,
+      "x": 607,
+      "y": 83.6875,
+      "density": "0.01",
+      "predictedYield": 2.841752052307129
     }
   ]
 }
@@ -63,14 +77,16 @@ layoutRouter.post("/create-layout", async (req, res) => {
         console.log("layout-dimensions: " + JSON.stringify(dimensions, null, 2));
         console.log("crop-areas: " + JSON.stringify(crops, null, 2));
         console.log("create-layout-request-data: " + JSON.stringify(req.body, null, 2));
-
+        // TBD: calculate total area
         let total_area = 0;
+        let total_yield = 0;
         const cropAreaIds = [];
         for (const cropAreaData of crops) {
             // destructure cropAreaData to extract fields like cropType, area, width, height, etc.
-            const { cropType, width, height, x, y, irrigation, fertilizerType, fertilizerMethod, density } = cropAreaData;
+            const { cropType, width, height, x, y, irrigation, fertilizerType, fertilizerMethod, density, predictedYield} = cropAreaData;
             let cur_area = width * height;  // compute area of current crop area
             total_area += cur_area; // update area of layout-total-area
+            total_yield += predictedYield;
 
             // create and save each crop area
             const newCropArea = new CropAreaModel({
@@ -83,7 +99,8 @@ layoutRouter.post("/create-layout", async (req, res) => {
                 irrigation,
                 fertilizerType,
                 fertilizerMethod, 
-                density
+                density,
+                predictedYield
             });
 
             // save the crop area and store its ID in the cropAreaIds array
@@ -102,7 +119,8 @@ layoutRouter.post("/create-layout", async (req, res) => {
             height: dimensions.height,
             soil_ph:soil_ph,
             soil_npk:soil_npk,
-            soil_om:soil_om
+            soil_om:soil_om,
+            total_yield:total_yield
         });
 
         // step 3: Save the layout object to the database
@@ -230,6 +248,7 @@ layoutRouter.post("/get-prediction/", async (req, res) => {
 
             // use model to predict
             const predictedYield = await predict(model, encodedExampleInput);
+            console.log("crop iDDDD: ", crop.id);
             predictedYields.push({ cropId: crop.id, value: predictedYield });
             console.log("predictedYield: ", predictedYield);
         }

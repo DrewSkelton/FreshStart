@@ -170,15 +170,15 @@ async function predict(model, inputData) {
         // predictedValue = inverseLogTransformData([predictedValue])[0];
         predictedValue = Math.max(0, predictedValue);
         
-        if (predictedValue <= 1) {
-            predictedValue += 1;
-        }
-        else if (predictedValue >= 50) {
-            predictedValue /= 38;
-        }
-        else if (predictedValue <= 50) {
-            predictedValue += 19;
-        }
+        // if (predictedValue <= 1) {
+        //     predictedValue += 1;
+        // }
+        // else if (predictedValue >= 50) {
+        //     predictedValue /= 38;
+        // }
+        // else if (predictedValue <= 50 && predictedValue > 1) {
+        //     predictedValue /= 19;
+        // }
 
         console.log("Predicted crop yield (kg per m^2):", predictedValue);
         // Clean up tensors to prevent memory leaks
@@ -216,6 +216,18 @@ async function main() {
 
 
 
+function normalizeData2(X) {
+    return X.map(row =>
+        row.map(value => {
+            if (typeof value === "number") {
+                if (value > 100) {
+                    return value / Math.max(...row.filter(v => typeof v === "number"));
+                }
+            }
+            return value;
+        })
+    );
+}
 
 async function prepareDataSingleExample(exampleInput) { // 2d-arr
     console.log("***PrepareData***:")
@@ -270,7 +282,7 @@ async function prepareDataSingleExample(exampleInput) { // 2d-arr
 
     // let X = exampleData;
     // Normalize the data (using the normalization function from parsedData)
-    X = normalizeData(X);  // Ensure that normalizeData can handle 2D arrays
+    X = normalizeData2(X);  // Ensure that normalizeData can handle 2D arrays
 
     // Convert X to tensor (the model expects tensor data)
     const X_tensor = tf.tensor2d(X);  // This is now a 2D array with shape [1, 9] for 1 example
