@@ -6,6 +6,29 @@ const DashboardPage = () => {
     const [layouts, setLayouts] = useState([]);
     const [selectedLayoutId, setSelectedLayoutId] = useState(null);
     const [selectedLayout, setSelectedLayout] = useState(null);
+    const [todos, setTodos] = useState([
+        {
+            id: 1,
+            title: "Check Irrigation System",
+            description: "Inspect sprinklers in Corn field",
+            date: "2024-03-20",
+            completed: false
+        },
+        {
+            id: 2,
+            title: "Fertilizer Application",
+            description: "Apply nitrogen fertilizer to Wheat field",
+            date: "2024-03-22",
+            completed: true
+        },
+        {
+            id: 3,
+            title: "Harvest Planning",
+            description: "Schedule equipment for tomato harvest",
+            date: "2024-03-25",
+            completed: false
+        }
+    ]);
 
     // Fetch layouts when the component mounts
     useEffect(() => {
@@ -23,49 +46,206 @@ const DashboardPage = () => {
         }
     }, [selectedLayoutId]);
 
-    return (
-        <div className="layout-page">
-            {/* Sidebar for Layout List */}
-            <div className="layout-list">
-                {layouts.map(layout => (
-                    <div 
-                        key={layout._id} 
-                        className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
-                        onClick={() => setSelectedLayoutId(layout._id)}
-                    >
-                        <h3>{layout.name}</h3>
-                        <p>Width: {layout.width} | Height: {layout.height}</p>
-                    </div>
-                ))}
-            </div>
+    const toggleTodo = (id) => {
+        setTodos(todos.map(todo =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        ));
+    };
 
-            {/* View Layout Panel */}
-            <div className="layout-view">
-                {selectedLayout ? (
-                    <div className="layout-canvas" style={{ width: selectedLayout.width, height: selectedLayout.height }}>
-                        {selectedLayout.crop_areas.map(crop => (
-                            <div
-                                key={crop._id}
-                                className="crop-area"
-                                style={{
-                                    width: crop.width,
-                                    height: crop.height,
-                                    position: "absolute",
-                                    left: crop.x,
-                                    top: crop.y,
-                                    border: "1px solid black",
-                                }}
+    return (
+        <div className="layout-wrapper">
+            <div className="layout-page">
+                <div className="dashboard-header">
+                    <h1>Dashboard</h1>
+                </div>
+                
+                <div className="layout-content">
+                    {/* Sidebar for Layout List */}
+                    <div className="layout-list">
+                        <h2 className="section-title">Saved Layouts</h2>
+                        {layouts.map(layout => (
+                            <div 
+                                key={layout._id} 
+                                className={`layout-card ${selectedLayoutId === layout._id ? "selected" : ""}`}
+                                onClick={() => setSelectedLayoutId(layout._id)}
                             >
-                                <p>{crop.cropType}</p>
-                                <p>{crop.area} sq. units</p>
-                                <p>Fertilizer: {crop.fertilizerType}</p>
-                                <p>Irrigation: {crop.irrigation}</p>
+                                <h3>{layout.name}</h3>
+                                <p>Width: {layout.width} | Height: {layout.height}</p>
                             </div>
                         ))}
+                        {layouts.length === 0 && (
+                            <p className="no-layouts">No layouts saved yet. Create a new layout in the Layout Planner.</p>
+                        )}
                     </div>
-                ) : (
-                    <p>Select a layout to view its details</p>
-                )}
+
+                    {/* View Layout Panel */}
+                    <div className="layout-view">
+                        <h2 className="section-title">Layout Preview</h2>
+                        {selectedLayout ? (
+                            <>
+                                <div className="layout-canvas-container">
+                                    <div className="layout-canvas" style={{ width: selectedLayout.width, height: selectedLayout.height }}>
+                                        {selectedLayout.crop_areas.map(crop => (
+                                            <div
+                                                key={crop._id}
+                                                className="crop-area"
+                                                style={{
+                                                    width: crop.width,
+                                                    height: crop.height,
+                                                    position: "absolute",
+                                                    left: crop.x,
+                                                    top: crop.y,
+                                                }}
+                                            >
+                                                <p className="crop-type">{crop.cropType}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="layout-stats">
+                                    <div className="stat-card">
+                                        <h3>Total Area</h3>
+                                        <div className="value">{selectedLayout.width * selectedLayout.height}m²</div>
+                                        <div className="subtext">Total farm area</div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Crop Areas</h3>
+                                        <div className="value">{selectedLayout.crop_areas.length}</div>
+                                        <div className="subtext">Different crop sections</div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Utilized Area</h3>
+                                        <div className="value">
+                                            {Math.round(selectedLayout.crop_areas.reduce((acc, crop) => acc + (crop.width * crop.height), 0))}m²
+                                        </div>
+                                        <div className="subtext">Total planted area</div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Crop Distribution</h3>
+                                        <div className="crop-distribution">
+                                            {selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                const existing = acc.find(item => item.type === crop.cropType);
+                                                if (existing) {
+                                                    existing.area += crop.width * crop.height;
+                                                } else {
+                                                    acc.push({ type: crop.cropType, area: crop.width * crop.height });
+                                                }
+                                                return acc;
+                                            }, []).map(crop => (
+                                                <div key={crop.type} className="crop-tag">
+                                                    {crop.type} <span className="area">{Math.round(crop.area)}m²</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Irrigation Methods</h3>
+                                        <div className="method-distribution">
+                                            {selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                const existing = acc.find(item => item.method === crop.irrigation);
+                                                if (existing) {
+                                                    existing.area += crop.width * crop.height;
+                                                } else {
+                                                    acc.push({ method: crop.irrigation, area: crop.width * crop.height });
+                                                }
+                                                return acc;
+                                            }, []).map(item => (
+                                                <div key={item.method} className="method-tag">
+                                                    {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Fertilizer Types</h3>
+                                        <div className="method-distribution">
+                                            {selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                const existing = acc.find(item => item.type === crop.fertilizerType);
+                                                if (existing) {
+                                                    existing.area += crop.width * crop.height;
+                                                } else {
+                                                    acc.push({ type: crop.fertilizerType, area: crop.width * crop.height });
+                                                }
+                                                return acc;
+                                            }, []).map(item => (
+                                                <div key={item.type} className="method-tag">
+                                                    {item.type} <span className="area">{Math.round(item.area)}m²</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Fertilization Methods</h3>
+                                        <div className="method-distribution">
+                                            {selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                const existing = acc.find(item => item.method === crop.fertilizerMethod);
+                                                if (existing) {
+                                                    existing.area += crop.width * crop.height;
+                                                } else {
+                                                    acc.push({ method: crop.fertilizerMethod, area: crop.width * crop.height });
+                                                }
+                                                return acc;
+                                            }, []).map(item => (
+                                                <div key={item.method} className="method-tag">
+                                                    {item.method} <span className="area">{Math.round(item.area)}m²</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="stat-card">
+                                        <h3>Crop Area Density</h3>
+                                        <div className="method-distribution">
+                                            {selectedLayout.crop_areas.reduce((acc, crop) => {
+                                                const existing = acc.find(item => item.type === crop.cropType);
+                                                if (existing) {
+                                                    existing.count += 1;
+                                                } else {
+                                                    acc.push({ type: crop.cropType, count: 1 });
+                                                }
+                                                return acc;
+                                            }, []).map(item => (
+                                                <div key={item.type} className="method-tag">
+                                                    {item.type} <span className="area">--</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <p>Select a layout from the list to view its details</p>
+                        )}
+                    </div>
+
+                    {/* Todo Section */}
+                    <div className="todo-section">
+                        <h2 className="section-title">To-Do List</h2>
+                        {todos.map(todo => (
+                            <div key={todo.id} className="todo-item">
+                                <div 
+                                    className={`todo-checkbox ${todo.completed ? 'checked' : ''}`}
+                                    onClick={() => toggleTodo(todo.id)}
+                                />
+                                <div className="todo-content">
+                                    <h4>{todo.title}</h4>
+                                    <p>{todo.description}</p>
+                                    <div className="todo-date">{todo.date}</div>
+                                </div>
+                            </div>
+                        ))}
+                        <button className="add-todo">
+                            <span>+</span> Add New Task
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
