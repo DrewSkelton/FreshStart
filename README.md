@@ -6,6 +6,9 @@ A tool that helps people start a small farm or garden. Plan, build, and maintain
 ## Description
 Fresh Start is designed to assist individuals in creating and managing their own small-scale farms or gardens. With features that allow users to plan, build, and maintain their farming projects, Fresh Start aims to make farming accessible to everyone.
 
+### Demo
+[![Video Title](https://img.youtube.com/vi/PhMmWp0cp5I/0.jpg)](https://www.youtube.com/watch?v=PhMmWp0cp5I)
+
 ## Features
 - **Planning Tools**: Plan your farm layout, select crops, and schedule planting.
 - **Building Guides**: Access step-by-step guides to build necessary farm structures.
