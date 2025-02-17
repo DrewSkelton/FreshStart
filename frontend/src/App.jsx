@@ -25,33 +25,52 @@ function BaseLayout({ children }) {
 }
 
 function AppContent() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
+    // Start loading immediately when location changes
     setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 300); // Reduced time for smoother transitions
 
-    return () => clearTimeout(timer);
+    // Ensure loading screen shows for at least 800ms to prevent flash
+    const minLoadingTime = 800;
+    const startTime = Date.now();
+
+    // Delay the content display
+    const timer = setTimeout(() => {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [location]);
 
   return (
     <BaseLayout>
       <div className="app-container">
-        {loading && <LoadingScreen />}
-        <BackButton />
-        <Routes>
-          <Route path="/" element={<h1>Home</h1>} />
-          <Route path="/layout-planning" element={<LayoutPage />} />
-          <Route path="/equipment" element={<EquipmentPage />} />
-          <Route path="/layout-dashboard" element={<DashboardPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/crop" element={<CropPage />} />
-        </Routes>
+        {loading ? (
+          <LoadingScreen />
+        ) : (
+          <div className="content-container">
+            <BackButton />
+            <Routes>
+              <Route path="/" element={<h1>Home</h1>} />
+              <Route path="/layout-planning" element={<LayoutPage />} />
+              <Route path="/equipment" element={<EquipmentPage />} />
+              <Route path="/layout-dashboard" element={<DashboardPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/crop" element={<CropPage />} />
+            </Routes>
+          </div>
+        )}
       </div>
     </BaseLayout>
   );

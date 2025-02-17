@@ -70,9 +70,11 @@ const CropPage = () => {
   const [crops, setCrops] = useState([]);
   const [layouts, setLayouts] = useState([]);
   const [selectedLayoutId, setSelectedLayoutId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch layouts when component mounts
   useEffect(() => {
+    setIsLoading(true);
     axios.get("http://localhost:3001/layout/get-layouts")
       .then(response => {
         setLayouts(response.data);
@@ -80,12 +82,18 @@ const CropPage = () => {
           setSelectedLayoutId(response.data[0]._id);
         }
       })
-      .catch(error => console.error("Error fetching layouts:", error));
+      .catch(error => console.error("Error fetching layouts:", error))
+      .finally(() => {
+        if (!selectedLayoutId) {
+          setIsLoading(false);
+        }
+      });
   }, []);
 
   // Fetch selected layout and update crops when selectedLayoutId changes
   useEffect(() => {
     if (selectedLayoutId) {
+      setIsLoading(true);
       axios.get(`http://localhost:3001/layout/get-layout/${selectedLayoutId}`)
         .then(response => {
           // Transform crop areas into crop entries with default planting info
@@ -98,7 +106,8 @@ const CropPage = () => {
           }));
           setCrops(cropAreas);
         })
-        .catch(error => console.error("Error fetching layout:", error));
+        .catch(error => console.error("Error fetching layout:", error))
+        .finally(() => setIsLoading(false));
     }
   }, [selectedLayoutId]);
 
@@ -139,6 +148,19 @@ const CropPage = () => {
       harvested
     };
   }, [crops]);
+
+  if (isLoading) {
+    return (
+      <div className="Crop-page-wrapper">
+        <div className="Crop-page">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading crops...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="Crop-page-wrapper">

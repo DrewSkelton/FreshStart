@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "../styles/DashboardPage.css"; 
 import { getCropColor } from "../components/CropArea";
 
 const DashboardPage = () => {
+    const navigate = useNavigate();
     const [layouts, setLayouts] = useState([]);
     const [selectedLayoutId, setSelectedLayoutId] = useState(null);
     const [selectedLayout, setSelectedLayout] = useState(null);
@@ -378,6 +380,28 @@ const DashboardPage = () => {
                                         </div>
                                     </div>
                                 )}
+                                
+                                {/* Add navigation buttons */}
+                                <div className="nav-buttons">
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/calendar')}
+                                    >
+                                        <span>📅</span> Calendar View
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/equipment')}
+                                    >
+                                        <span>🚜</span> Equipment Manager
+                                    </button>
+                                    <button 
+                                        className="nav-button"
+                                        onClick={() => navigate('/crop')}
+                                    >
+                                        <span>🌾</span> Crop Manager
+                                    </button>
+                                </div>
                             </>
                         ) : (
                             <p>Select a layout from the list to view its details</p>

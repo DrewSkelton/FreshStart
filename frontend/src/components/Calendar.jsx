@@ -52,13 +52,15 @@ const Calendar = () => {
   const [events, setEvents] = useState(generateRandomTasks());
 
   return (
-    <div style={{ height: 750, width: 1000 }}>
+    <div className="calendar-container">
       <BigCalendar
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ margin: '20px' }}
+        style={{ height: 700 }}
+        views={['month', 'week', 'day']}
+        defaultView="month"
       />
     </div>
   );

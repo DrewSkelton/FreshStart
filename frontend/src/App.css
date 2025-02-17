@@ -56,6 +56,14 @@ html, body, #root {
     height: 100%;
 }
 
+.content-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
 /* Theme Variables */
 :root {
     --bg-primary: #2a272e;

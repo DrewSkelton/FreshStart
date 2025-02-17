@@ -1,4 +1,5 @@
-.loading-screen {
+.loading-screen,
+.loading-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -24,7 +25,8 @@
     margin-bottom: 1rem;
 }
 
-.loading-screen p {
+.loading-screen p,
+.loading-container p {
     font-size: 1.2rem;
     font-weight: 500;
     color: #43873b;

@@ -1,4 +1,3 @@
-
 export const farmTasks = [
   {
     id: 1,
@@ -31,10 +30,30 @@ export const farmTasks = [
 
 
 // CalendarPage.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from '../components/Calendar';
 
 const CalendarPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time for demonstration
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="calendar-page">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading calendar...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="calendar-page">

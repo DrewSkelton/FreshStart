@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import '../styles/EquipmentPage.css';
 
 const EquipmentCard = ({ item, onEdit }) => {
@@ -147,6 +147,7 @@ const EquipmentPage = () => {
   const [showNeededEquipment, setShowNeededEquipment] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingNeededEquipment, setEditingNeededEquipment] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [equipment, setEquipment] = useState([
     {
       id: 1,
@@ -257,6 +258,14 @@ const EquipmentPage = () => {
     { id: 'other', name: 'Other' }
   ];
 
+  useEffect(() => {
+    // Simulate loading time for demonstration
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleEditSave = (updatedEquipment) => {
     setEquipment(equipment.map(item => 
       item.id === updatedEquipment.id ? updatedEquipment : item
@@ -358,6 +367,19 @@ const EquipmentPage = () => {
   };
 
   const statLabels = getStatLabels();
+
+  if (isLoading) {
+    return (
+      <div className="equipment-page-wrapper">
+        <div className="equipment-page">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading equipment...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="equipment-page-wrapper">
