@@ -8,6 +8,7 @@ Fresh Start is designed to assist individuals in creating and managing their own
 
 ### Demo
 [![Video Title](https://img.youtube.com/vi/PhMmWp0cp5I/0.jpg)](https://www.youtube.com/watch?v=PhMmWp0cp5I)
+Devpost: [Devpost](https://devpost.com/software/fresh-start-q5f92s?_gl=1*1i7bq8k*_gcl_au*MjI3ODg5NjguMTczOTI0Mjg3NA..*_ga*MTg4NzI5NjQyLjE3MzkyNDI4NzQ.*_ga_0YHJK3Y10M*MTczOTc3NjE5NS4yMi4xLjE3Mzk3Nzc1MDQuMC4wLjA)
 
 ## Features
 - **Planning Tools**: Plan your farm layout, select crops, and schedule planting.
