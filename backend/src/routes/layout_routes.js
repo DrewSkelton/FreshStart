@@ -16,6 +16,17 @@ import WaterTaskModel from "../models/WaterTask.js";
 import FertTaskModel from "../models/FertTask.js";
 
 
+// import environment variables
+import { OpenAI } from 'openai';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+console.log("Current directory:", __dirname);
+console.log("Env file path:", path.resolve(__dirname, '../.env'));
+console.log("API Key loaded:", process.env.OPENAI_API_KEY ? "Yes" : "No");
 
 // import ml funcs
 import modelFunctions from '../ml_funcs/train_model.js';
@@ -295,12 +306,15 @@ layoutRouter.post("/get-prediction/", async (req, res) => {
     
 });
 
-import { OpenAI } from 'openai'; 
+
+
+
 layoutRouter.get("/generate-schedule-tasks/:id", async (req, res) => {
+    console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
     try {
         // Initialize OpenAI
         const openai = new OpenAI({
-            apiKey: "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"
+            apiKey: process.env.OPENAI_API_KEY // load in .env environment variable
         });
  
         // Step 1: Fetch the layout object by its ID

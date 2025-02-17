@@ -12,6 +12,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// // import environment variables in root on backend 
+// import dotenv from 'dotenv';
+// dotenv.config();
+// console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
 
 // include imported routes
 app.use("/layout", layoutRouter);
