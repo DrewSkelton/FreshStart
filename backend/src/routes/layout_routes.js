@@ -309,6 +309,7 @@ layoutRouter.post("/get-prediction/", async (req, res) => {
 
 
 
+
 layoutRouter.get("/generate-schedule-tasks/:id", async (req, res) => {
     console.log("OpenAI API Key:", process.env.OPENAI_API_KEY);
     try {
