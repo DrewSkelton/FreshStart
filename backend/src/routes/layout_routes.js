@@ -251,7 +251,7 @@ get-prediction-request-data: {
 }
 */
 layoutRouter.post("/get-prediction/", async (req, res) => {
-    
+    try {
         const  crops  = req.body.crops;
         console.log("get-prediction-request-data: " + JSON.stringify(req.body, null, 2))
         
@@ -301,9 +301,10 @@ layoutRouter.post("/get-prediction/", async (req, res) => {
         res.status(200).json({ predictedYields });
         console.log(" after sent response");
 
-    // console.error("Error predicting crop yield:", error.message);
-    // res.status(500).json({ message: "Error with prediction", error: error.message });
-    
+    } catch (error) {
+        console.error("Error predicting crop yield:", error.message);
+        res.status(500).json({ message: "Error with prediction", error: error.message });
+    }
 });
 
 
