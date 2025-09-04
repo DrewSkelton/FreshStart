@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import CalendarPage from './pages/CalendarPage';
 import CropPage from './pages/CropPage';
@@ -60,7 +60,7 @@ function AppContent() {
           <div className="content-container">
             <BackButton />
             <Routes>
-              <Route path="/" element={<h1>Home</h1>} />
+              <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/layout-planning" element={<LayoutPage />} />
               <Route path="/equipment" element={<EquipmentPage />} />
               <Route path="/layout-dashboard" element={<DashboardPage />} />

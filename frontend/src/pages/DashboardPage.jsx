@@ -178,7 +178,7 @@ const DashboardPage = () => {
                 </div>
                 <button 
                     className="add-layout"
-                    onClick={() => window.location.href = '/layout-planning'}
+                    onClick={() => navigate('/layout-planning')}
                 >
                     <span>+</span> Create New Farm Layout
                 </button>
