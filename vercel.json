@@ -2,20 +2,26 @@
   "version": 2,
   "builds": [
     {
-      "src": "package.json",
+      "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "cd frontend && npm run build",
-        "outputDirectory": "dist"
+        "buildCommand": "npm run build",
+        "outputDirectory": "../dist"
       }
     },
     {
       "src": "api/auth/*.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "api/_shared/**"
+      }
     },
     {
       "src": "api/layout/*.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "api/_shared/**"
+      }
     }
   ],
   "routes": [
