@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import "../styles/DashboardPage.css"; 
+import "../styles/DashboardPage.css";
+import { buildApiUrl, endpoints } from '../config/api.js'; 
 import { getCropColor } from "../components/CropArea";
 
 const DashboardPage = () => {
@@ -46,7 +47,7 @@ const DashboardPage = () => {
 
     // Fetch layouts when the component mounts
     useEffect(() => {
-        axios.get("http://localhost:3001/layout/get-layouts")
+        axios.get(buildApiUrl(endpoints.getLayouts))
             .then(response => {
                 setLayouts(response.data);
                 // If there are layouts and no layout is currently selected, select the first one
@@ -61,7 +62,7 @@ const DashboardPage = () => {
     useEffect(() => {
         if (selectedLayoutId) {
             
-            axios.get(`http://localhost:3001/layout/get-layout/${selectedLayoutId}`)
+            axios.get(buildApiUrl(endpoints.getLayout(selectedLayoutId)))
                 .then(response => {
                     setSelectedLayout(response.data);
                     console.log("Full layout data:", response.data);

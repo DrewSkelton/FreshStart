@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import '../styles/LoginStyle.css'
+import { buildApiUrl, endpoints } from '../config/api.js';
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ const LoginForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const result = await axios.post("http://localhost:3001/login", {email, password});
+      const result = await axios.post(buildApiUrl(endpoints.login), {email, password});
       console.log("login-form result data: " + result.data.message);
       // save the return access-token from request in cookies
       setCookies("access_token", result.data.token);

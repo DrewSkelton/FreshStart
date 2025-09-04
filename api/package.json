@@ -1,0 +1,16 @@
+{
+  "name": "farmstart-api",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.1",
+    "openai": "^4.85.1",
+    "papaparse": "^5.5.2"
+  }
+}

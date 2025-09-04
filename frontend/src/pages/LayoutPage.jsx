@@ -4,6 +4,7 @@ import CropForm from "../components/CropForm";
 import axios from "axios";
 import '../styles/LayoutPage.css';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl, endpoints } from '../config/api.js';
 
 const LayoutPage = () => {
   const [name, setName] = useState("");
@@ -90,7 +91,7 @@ const LayoutPage = () => {
     };
 
     try {
-      const result = await axios.post("http://localhost:3001/layout/create-layout", layoutData);
+      const result = await axios.post(buildApiUrl(endpoints.createLayout), layoutData);
       console.log("Layout saved:", result.data.message);
       navigate("/layout-dashboard");
     } catch (error) {
@@ -126,7 +127,7 @@ const LayoutPage = () => {
     };
     console.log("after");
 
-    const response = await axios.post("http://localhost:3001/layout/get-prediction", layoutData);
+    const response = await axios.post(buildApiUrl(endpoints.getPrediction), layoutData);
     const predictedYields = response.data.predictedYields;
     console.log("response-predict: ", response.data);
     // Update the crop areas with predicted yields
