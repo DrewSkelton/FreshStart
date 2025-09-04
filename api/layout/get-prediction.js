@@ -1,5 +1,5 @@
-import { connectToDatabase } from "../_utils/db.js";
-import { handleCors } from "../_utils/cors.js";
+import { connectToDatabase } from "../_shared/db.js";
+import { handleCors } from "../_shared/cors.js";
 
 // Check if we're in production/Vercel environment
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
@@ -14,19 +14,19 @@ function getLightweightPrediction(crop) {
         'Rice': 1.9
     };
     
-    let yield = baseYields[crop.cropType] || 2.0;
+    let cropYield = baseYields[crop.cropType] || 2.0;
     
     // Apply modifiers based on farming practices
-    if (crop.irrigation === 'drip') yield *= 1.1;
-    else if (crop.irrigation === 'sprinkler') yield *= 1.05;
+    if (crop.irrigation === 'drip') cropYield *= 1.1;
+    else if (crop.irrigation === 'sprinkler') cropYield *= 1.05;
     
-    if (crop.fertilizerType === 'nitrogen') yield *= 1.08;
-    else if (crop.fertilizerType === 'phosphorus') yield *= 1.06;
+    if (crop.fertilizerType === 'nitrogen') cropYield *= 1.08;
+    else if (crop.fertilizerType === 'phosphorus') cropYield *= 1.06;
     
     const density = parseFloat(crop.density) || 0.5;
-    yield *= (1 + density * 0.5);
+    cropYield *= (1 + density * 0.5);
     
-    return yield;
+    return cropYield;
 }
 
 // ML functions will be loaded dynamically when needed

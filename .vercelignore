@@ -1,6 +1,6 @@
 # Exclude heavy ML dependencies from production deployment
 api/layout/_ml-deps/
-api/_utils/ml_funcs/
+api/_utils/
 
 # Development files
 backend/

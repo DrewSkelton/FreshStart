@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { connectToDatabase } from "../_utils/db.js";
-import { handleCors } from "../_utils/cors.js";
-import UserModel from "../_utils/models/User.js";
+import { connectToDatabase } from "../_shared/db.js";
+import { handleCors } from "../_shared/cors.js";
+import UserModel from "../_shared/models/User.js";
 
 export default async function handler(req, res) {
     return handleCors(req, res, async (req, res) => {

@@ -1,7 +1,7 @@
-import { connectToDatabase } from "../_utils/db.js";
-import { handleCors } from "../_utils/cors.js";
-import LayoutModel from "../_utils/models/Layout.js";
-import CropAreaModel from "../_utils/models/CropArea.js";
+import { connectToDatabase } from "../_shared/db.js";
+import { handleCors } from "../_shared/cors.js";
+import LayoutModel from "../_shared/models/Layout.js";
+import CropAreaModel from "../_shared/models/CropArea.js";
 
 export default async function handler(req, res) {
     return handleCors(req, res, async (req, res) => {
