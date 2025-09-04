@@ -10,7 +10,11 @@
       }
     },
     {
-      "src": "api/**/*.js",
+      "src": "api/auth/*.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/layout/*.js",
       "use": "@vercel/node"
     }
   ],

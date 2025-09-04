@@ -1,6 +1,6 @@
-import { connectToDatabase } from "../../lib/db.js";
-import { handleCors } from "../../lib/cors.js";
-import modelFunctions from '../../lib/ml_funcs/train_model.js';
+import { connectToDatabase } from "../_utils/db.js";
+import { handleCors } from "../_utils/cors.js";
+import modelFunctions from '../_utils/ml_funcs/train_model.js';
 
 const { prepareDataSingleExample, loadModel, predict } = modelFunctions;
 
