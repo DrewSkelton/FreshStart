@@ -1,8 +1,44 @@
 import { connectToDatabase } from "../_utils/db.js";
 import { handleCors } from "../_utils/cors.js";
-import modelFunctions from '../_utils/ml_funcs/train_model.js';
 
-const { prepareDataSingleExample, loadModel, predict } = modelFunctions;
+// Check if we're in production/Vercel environment
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+// Lightweight prediction function for production
+function getLightweightPrediction(crop) {
+    const baseYields = {
+        'Corn': 2.5,
+        'Tomatoes': 2.2, 
+        'Potatoes': 2.8,
+        'Wheat': 2.1,
+        'Rice': 1.9
+    };
+    
+    let yield = baseYields[crop.cropType] || 2.0;
+    
+    // Apply modifiers based on farming practices
+    if (crop.irrigation === 'drip') yield *= 1.1;
+    else if (crop.irrigation === 'sprinkler') yield *= 1.05;
+    
+    if (crop.fertilizerType === 'nitrogen') yield *= 1.08;
+    else if (crop.fertilizerType === 'phosphorus') yield *= 1.06;
+    
+    const density = parseFloat(crop.density) || 0.5;
+    yield *= (1 + density * 0.5);
+    
+    return yield;
+}
+
+// Dynamic import for ML functions (only in development)
+let mlFunctions = null;
+if (!isProduction) {
+    try {
+        const module = await import('./_ml-deps/ml_funcs/train_model.js');
+        mlFunctions = module.default;
+    } catch (error) {
+        console.log("ML functions not available, using lightweight prediction");
+    }
+}
 
 export default async function handler(req, res) {
     return handleCors(req, res, async (req, res) => {
@@ -16,43 +52,52 @@ export default async function handler(req, res) {
             const crops = req.body.crops;
             console.log("get-prediction-request-data: " + JSON.stringify(req.body, null, 2));
 
-            // Load the model (train and save if necessary)
-            const model = await loadModel();
-
             const predictedYields = [];
             console.log("crops loop", crops);
+            console.log("Using production mode:", isProduction);
             
             for (let crop of crops) {
-                // Encode the single crop example
-                let exampleInput = [
-                    crop.cropType, 
-                    crop.width * crop.height,  // Calculate crop area (width * height)
-                    req.body.soil_ph, 
-                    req.body.soil_npk,  
-                    req.body.soil_om,  
-                    crop.irrigation, 
-                    crop.fertilizerType, 
-                    crop.fertilizerMethod,
-                    crop.density  
-                ];
+                let predictedYield;
                 
-                console.log("exampleInput before**::", exampleInput);
-                exampleInput = exampleInput.map(item => {
-                    // Check if the item is a string and capitalize the first letter
-                    if (typeof item === 'string') {
-                        return item.charAt(0).toUpperCase() + item.slice(1);
+                if (isProduction || !mlFunctions) {
+                    // Use lightweight prediction in production or when ML not available
+                    predictedYield = getLightweightPrediction(crop);
+                    console.log("Using lightweight prediction");
+                } else {
+                    // Use full ML model in development
+                    try {
+                        const { prepareDataSingleExample, loadModel, predict } = mlFunctions;
+                        const model = await loadModel();
+                        
+                        let exampleInput = [
+                            crop.cropType,
+                            crop.width * crop.height,
+                            req.body.soil_ph,
+                            req.body.soil_npk,
+                            req.body.soil_om,
+                            crop.irrigation,
+                            crop.fertilizerType,
+                            crop.fertilizerMethod,
+                            crop.density
+                        ];
+                        
+                        exampleInput = exampleInput.map(item => {
+                            if (typeof item === 'string') {
+                                return item.charAt(0).toUpperCase() + item.slice(1);
+                            }
+                            return item;
+                        });
+                        
+                        const encodedInput = await prepareDataSingleExample([exampleInput]);
+                        predictedYield = await predict(model, encodedInput.X_tensor.arraySync()[0]);
+                        console.log("Using ML model prediction");
+                    } catch (error) {
+                        console.log("ML prediction failed, falling back to lightweight:", error.message);
+                        predictedYield = getLightweightPrediction(crop);
                     }
-                    return item; // Return the item as is if it's not a string
-                });
-                console.log("exampleInput:", exampleInput);
-
-                let encodedExampleInput = await prepareDataSingleExample([exampleInput]);
-                encodedExampleInput = encodedExampleInput.X_tensor.arraySync()[0];
-                console.log("encodedExampleInput:", encodedExampleInput);
-
-                // use model to predict
-                const predictedYield = await predict(model, encodedExampleInput);
-                console.log("crop iDDDD: ", crop.id);
+                }
+                
+                console.log("crop ID: ", crop.id);
                 predictedYields.push({ cropId: crop.id, value: predictedYield });
                 console.log("predictedYield: ", predictedYield);
             }

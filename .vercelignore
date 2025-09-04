@@ -1,0 +1,10 @@
+# Exclude heavy ML dependencies from production deployment
+api/layout/_ml-deps/
+api/_utils/ml_funcs/
+
+# Development files
+backend/
+node_modules/
+*.log
+.env.local
+.env.development
