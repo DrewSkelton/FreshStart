@@ -1,0 +1,15 @@
+{
+  "name": "farmstart",
+  "version": "1.0.0",
+  "description": "FarmStart - A comprehensive farm management application",
+  "scripts": {
+    "build": "cd frontend && npm run build && cd ../backend && npm start",
+    "build:parallel": "concurrently \"cd frontend && npm run build\" \"cd backend && npm start\"",
+    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm start\"",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "private": true
+}
