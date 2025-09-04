@@ -29,16 +29,7 @@ function getLightweightPrediction(crop) {
     return yield;
 }
 
-// Dynamic import for ML functions (only in development)
-let mlFunctions = null;
-if (!isProduction) {
-    try {
-        const module = await import('./_ml-deps/ml_funcs/train_model.js');
-        mlFunctions = module.default;
-    } catch (error) {
-        console.log("ML functions not available, using lightweight prediction");
-    }
-}
+// ML functions will be loaded dynamically when needed
 
 export default async function handler(req, res) {
     return handleCors(req, res, async (req, res) => {
@@ -59,14 +50,15 @@ export default async function handler(req, res) {
             for (let crop of crops) {
                 let predictedYield;
                 
-                if (isProduction || !mlFunctions) {
-                    // Use lightweight prediction in production or when ML not available
+                if (isProduction) {
+                    // Use lightweight prediction in production
                     predictedYield = getLightweightPrediction(crop);
-                    console.log("Using lightweight prediction");
+                    console.log("Using lightweight prediction (production mode)");
                 } else {
-                    // Use full ML model in development
+                    // Try to use ML model in development
                     try {
-                        const { prepareDataSingleExample, loadModel, predict } = mlFunctions;
+                        const module = await import('./_ml-deps/ml_funcs/train_model.js');
+                        const { prepareDataSingleExample, loadModel, predict } = module.default;
                         const model = await loadModel();
                         
                         let exampleInput = [
